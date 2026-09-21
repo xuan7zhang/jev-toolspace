@@ -31,7 +31,8 @@ def main():
                 for l in open(f):
                     try: x = json.loads(l)
                     except Exception: continue
-                    t = x.get("input_token_count"); v.append(sum(sum(s) if isinstance(s, list) else s for s in t) if isinstance(t, list) else t)
+                    def flat(z): return sum(flat(y) for y in z) if isinstance(z, list) else (z or 0)
+                    v.append(flat(x.get("input_token_count")))
         return st.mean(v) if v else None
     rows = {}
     for arm in arms:

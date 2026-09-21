@@ -26,7 +26,7 @@
 \date{September 2026}
 
 \abstract{
-Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07.
+Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07. On BFCL multi-turn function calling, where every tool stays callable and the space decides which tools keep full documentation, the order reverses: spaces built from requests raise accuracy from 11.3\% to 16.3--17.3\%, while spaces built from the executor's own traces reach 12.5\%, because those traces are mostly failed attempts.
 }
 
 \begin{document}
@@ -37,15 +37,16 @@ Serving each recurring task with a small tool space instead of the whole registr
 
 A tool-using language model is usually served with every tool in its registry \citep{toolformer,gorilla,qin2024toolllm}. For requests that recur within a task, a smaller task-specific space removes distractor tools and shortens every prompt. Building that space means deciding which tools a task needs. Retrieval methods decide from tool descriptions \citep{xiao2024cpack,tool2vec}; trace-based methods decide from what the tools returned and what the model answered \citep{zheng2023judging}.
 
-We ask whether an external relevance model can make this decision. Jev \citep{jevdocs} answers yes/no questions about a shared input with independent probabilities, so one call can score every tool in a registry, and each tool's score stands on its own. It is also cheap (\$0.042 per million input tokens) and fast (about 0.3 seconds per call). We evaluate it on TGB \citep{tgb2026} with a fixed executor and find:
+We ask whether an external relevance model can make this decision. Jev \citep{jevdocs} answers yes/no questions about a shared input with independent probabilities, so one call can score every tool in a registry, and each tool's score stands on its own. It is also cheap (\$0.042 per million input tokens) and fast (about 0.3 seconds per call). We evaluate it on TGB \citep{tgb2026} and BFCL \citep{bfcl} with a fixed executor and find:
 \begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
   \item From the request and tool descriptions, Jev picks the downstream tools but often misses the upstream data source, which breaks the chain.
   \item Averaging these judgments over a task makes them worse, because the same mistake repeats on every request.
   \item From execution traces, Jev selects every required tool and improves on serving all tools by 11.2 points.
+  \item On BFCL, request-based spaces work and trace-based spaces do not: the executor fails most build conversations, so its traces show the wrong tools.
 \end{itemize}
 
 % ---------------------------------------------------------------------
-\section{Setup}
+\section{Setup on TGB}
 
 \paragraph{Benchmark.}
 TGB has 4,000 text-only requests in ten families of 400 \citep{tgb2026}. Each request is built from a hidden scene (a table, sensor series, calendar, or document corpus) that only the tools can read. Eight families need a chain of two or three tools (Table~\ref{tab:families}); \task{compute_only} and \task{no_tool} are controls. The registry has 15 tools: seven chain tools and eight distractors. Every served tool runs once per request, the chain passes outputs downstream, and the executor sees one line \tool{<Tool>: <output>} per served tool. Accuracy is exact match with the gold answer.
@@ -85,7 +86,7 @@ One call scores all 15 tools, with one yes/no question per tool. Tools are descr
 \emph{Keep all} serves the 15 tools. \emph{Random} draws $K$ tools. \emph{Dense} \citep{xiao2024cpack} and \emph{Tool2Vec} \citep{tool2vec} rank tools by embedding similarity to the build requests. \emph{Trace judge} asks the executor itself which tools support its answer on the build traces \citep{zheng2023judging}. \JC{} and Trace judge read the same traces.
 
 % ---------------------------------------------------------------------
-\section{Results}
+\section{Results on TGB}
 
 \begin{table}[t]
 \centering\small
@@ -175,9 +176,41 @@ Method & Build once & Per evaluation request \\
 Table~\ref{tab:cost} lists the cost. A Jev task space costs \$0.06 to \$0.07 to build for all ten families and adds nothing per request. \JA{} adds one call and 0.31 seconds to every request, \$0.25 over the 3,200 evaluation requests. Every method at the same budget shortens the executor prompt from 271 tokens to 117 to 165.
 
 % ---------------------------------------------------------------------
+\section{BFCL}
+\label{sec:bfcl}
+
+\paragraph{Setup.}
+We use the 200 records of BFCL v4 \texttt{multi\_turn\_base} \citep{bfcl}, grouped by primary API class (GorillaFileSystem, TradingBot, TravelAPI, VehicleControlAPI), with the first 10 records of each class for building and the other 40 for testing (160 in total). A record's menu holds the functions of its API classes, padded to 30 with functions of other classes. A record succeeds only if the calls across all its turns reach the reference end state, so every tool stays callable: a space is the set of $K$ tools that keep their full documentation, and the other tools keep their signature and one sentence. $K$ is fixed per class from build accuracy (4, 4, 8, and 4). The executor is again Qwen2.5-7B-Instruct, and each method is run three times in one session.
+
+Jev scores the tools of each record's menu as on TGB. \JA{} reads a test record's user turns; \JB{} averages the same scores over the 10 build records of a class. \JC{} reads the executor's build conversations under full documentation (user turns, calls, tool outputs, replies) and is asked whether the assistant relied on each tool it called, to perform an action the user asked for or to feed a later step. A tool that is missing from a build record's menu, or that the executor did not call, counts as 0 in the class average.
+
+\begin{table}[t]
+\centering\small
+\caption{BFCL, 160 test records. Accuracy is the mean of three runs (individual runs in brackets). Recall: share of the reference calls' tools that keep full documentation. Tokens: executor input tokens per record, summed over turns.}
+\label{tab:bfcl}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Method & Accuracy & Recall & Tokens \\
+\midrule
+Full documentation & 11.3 {\scriptsize(11.3, 11.3, 11.3)} & 1.00 & 208k \\
+\JA{} (per request) & 16.3 {\scriptsize(15.6, 16.9, 16.3)} & 0.71 & 80k \\
+\JB{} (per task) & \textbf{17.3} {\scriptsize(17.5, 16.9, 17.5)} & 0.31 & 90k \\
+\JC{} (per task, traces) & 12.5 {\scriptsize(12.5, 12.5, 12.5)} & 0.45 & 93k \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Results.}
+Table~\ref{tab:bfcl} shows the results. Both request-based settings improve on full documentation in every run, by 4 to 6 points, and cut the executor's input by more than half. \JC{} stays near full documentation. Most of the gain comes from TradingBot (30.0\% with full documentation, 41.7\% with \JA{}, 39.2\% with \JB{}) and TravelAPI (12.5\%, 15.0\%, 20.0\%).
+
+The trace-based space is weak here because the traces are. The executor solves 20\% of the build records under full documentation, and its conversations are dominated by failed and repeated calls, such as switching to \tool{cp} after a failed \tool{mv} when the user asked to move a file. Jev reads these conversations faithfully, so the tools it credits are the ones the executor used, including the wrong ones, and tools the executor never called receive no credit at all. On TGB, where tool outputs are deterministic and the executor answers most build requests, the same reading recovers every required tool.
+
+Averaging over a class does not hurt on BFCL (\JB{} 17.3\% against \JA{} 16.3\%). Records within a class ask for different subsets of the class's functions, and the class average ranks the commonly needed functions first. Recall of the documented set is also a weak guide here: \JA{} documents more of the reference tools than \JB{} (0.71 against 0.31) at similar accuracy, because an undocumented tool remains callable.
+
+% ---------------------------------------------------------------------
 \section{Conclusion}
 
-An external relevance judge can build good task spaces if it reads the execution trace. From requests and tool descriptions, Jev confuses similar data sources, and averaging over a task keeps the confusion. From traces, Jev selects every required tool for a few cents and improves on serving all tools by 11.2 points. The next steps are ranking distractors, more executors, larger registries, and BFCL and GTA.
+What an external relevance judge should read depends on the quality of the traces. On TGB, tool outputs are reliable and the executor answers most build requests, so the execution trace is the input that matters: from requests Jev confuses similar data sources, and from traces it selects every required tool and improves on serving all tools by 11.2 points. On BFCL, the executor fails most build conversations, so its traces point to the wrong tools, and spaces built from the requests are the ones that help, by 4 to 6 points. Both settings cost a few cents for a whole benchmark. Next steps are more executors and larger registries, and deciding from the traces themselves when they are good enough to use.
 
 \bibliographystyle{plainnat}
 \IfFileExists{jev_eval/refs.bib}{\bibliography{jev_eval/refs}}{\bibliography{refs}}

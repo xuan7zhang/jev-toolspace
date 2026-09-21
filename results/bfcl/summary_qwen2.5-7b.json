@@ -1,0 +1,197 @@
+{
+ "key": "qwen2.5-7b",
+ "K_star": {
+  "GorillaFileSystem": 4,
+  "TradingBot": 4,
+  "TravelAPI": 8,
+  "VehicleControlAPI": 4
+ },
+ "rows": {
+  "full": {
+   "n_rep": 3,
+   "acc": 11.25,
+   "acc_reps": [
+    11.25,
+    11.25,
+    11.25
+   ],
+   "acc_by_class": {
+    "GorillaFileSystem": 0.0,
+    "TradingBot": 30.000000000000004,
+    "TravelAPI": 12.5,
+    "VehicleControlAPI": 2.500000000000002
+   },
+   "recall": 1.0,
+   "coverage": 1,
+   "recall_by_class": {
+    "GorillaFileSystem": 1.0,
+    "TradingBot": 1.0,
+    "TravelAPI": 1.0,
+    "VehicleControlAPI": 1.0
+   },
+   "coverage_by_class": {
+    "GorillaFileSystem": 1,
+    "TradingBot": 1,
+    "TravelAPI": 1,
+    "VehicleControlAPI": 1
+   },
+   "full_docs": 31.58125,
+   "input_tokens": 208390.1875
+  },
+  "jevA": {
+   "n_rep": 3,
+   "acc": 16.25,
+   "acc_reps": [
+    15.625,
+    16.875,
+    16.25
+   ],
+   "acc_by_class": {
+    "GorillaFileSystem": 7.499999999999996,
+    "TradingBot": 41.66666666666667,
+    "TravelAPI": 15.000000000000002,
+    "VehicleControlAPI": 0.833333333333334
+   },
+   "recall": 0.705672123015873,
+   "coverage": 0.25,
+   "recall_by_class": {
+    "GorillaFileSystem": 0.7342857142857143,
+    "TradingBot": 0.6488690476190476,
+    "TravelAPI": 0.9231051587301587,
+    "VehicleControlAPI": 0.5164285714285715
+   },
+   "coverage_by_class": {
+    "GorillaFileSystem": 0.225,
+    "TradingBot": 0.15,
+    "TravelAPI": 0.625,
+    "VehicleControlAPI": 0
+   },
+   "full_docs": 5,
+   "input_tokens": 79754.3625
+  },
+  "jevB": {
+   "n_rep": 3,
+   "acc": 17.291666666666668,
+   "acc_reps": [
+    17.5,
+    16.875,
+    17.5
+   ],
+   "acc_by_class": {
+    "GorillaFileSystem": 7.499999999999996,
+    "TradingBot": 39.166666666666664,
+    "TravelAPI": 19.999999999999996,
+    "VehicleControlAPI": 2.500000000000002
+   },
+   "recall": 0.30523065476190475,
+   "coverage": 0,
+   "recall_by_class": {
+    "GorillaFileSystem": 0.2955952380952381,
+    "TradingBot": 0.2908928571428571,
+    "TravelAPI": 0.35933531746031744,
+    "VehicleControlAPI": 0.27509920634920637
+   },
+   "coverage_by_class": {
+    "GorillaFileSystem": 0,
+    "TradingBot": 0,
+    "TravelAPI": 0,
+    "VehicleControlAPI": 0
+   },
+   "full_docs": 5,
+   "input_tokens": 90460.7625
+  },
+  "jevC": {
+   "n_rep": 3,
+   "acc": 12.5,
+   "acc_reps": [
+    12.5,
+    12.5,
+    12.5
+   ],
+   "acc_by_class": {
+    "GorillaFileSystem": 5.000000000000004,
+    "TradingBot": 30.000000000000004,
+    "TravelAPI": 12.5,
+    "VehicleControlAPI": 2.500000000000002
+   },
+   "recall": 0.45080853174603175,
+   "coverage": 0.03125,
+   "recall_by_class": {
+    "GorillaFileSystem": 0.25684523809523807,
+    "TradingBot": 0.46904761904761905,
+    "TravelAPI": 0.611359126984127,
+    "VehicleControlAPI": 0.46598214285714284
+   },
+   "coverage_by_class": {
+    "GorillaFileSystem": 0,
+    "TradingBot": 0,
+    "TravelAPI": 0.125,
+    "VehicleControlAPI": 0
+   },
+   "full_docs": 5,
+   "input_tokens": 93245.31875
+  },
+  "jevBpm": {
+   "n_rep": 3,
+   "acc": 12.916666666666666,
+   "acc_reps": [
+    12.5,
+    12.5,
+    13.75
+   ],
+   "acc_by_class": {
+    "GorillaFileSystem": 3.333333333333336,
+    "TradingBot": 28.333333333333336,
+    "TravelAPI": 19.999999999999996,
+    "VehicleControlAPI": 0.0
+   },
+   "recall": 0.3415525793650794,
+   "coverage": 0,
+   "recall_by_class": {
+    "GorillaFileSystem": 0.2955952380952381,
+    "TradingBot": 0.33842261904761906,
+    "TravelAPI": 0.4670138888888889,
+    "VehicleControlAPI": 0.26517857142857143
+   },
+   "coverage_by_class": {
+    "GorillaFileSystem": 0,
+    "TradingBot": 0,
+    "TravelAPI": 0,
+    "VehicleControlAPI": 0
+   },
+   "full_docs": 5,
+   "input_tokens": 92575.35625
+  },
+  "jevCpm": {
+   "n_rep": 3,
+   "acc": 13.333333333333334,
+   "acc_reps": [
+    13.75,
+    12.5,
+    13.75
+   ],
+   "acc_by_class": {
+    "GorillaFileSystem": 2.500000000000002,
+    "TradingBot": 31.666666666666664,
+    "TravelAPI": 14.166666666666668,
+    "VehicleControlAPI": 5.000000000000004
+   },
+   "recall": 0.26236607142857143,
+   "coverage": 0.0125,
+   "recall_by_class": {
+    "GorillaFileSystem": 0.25226190476190474,
+    "TradingBot": 0.19898809523809524,
+    "TravelAPI": 0.48061507936507936,
+    "VehicleControlAPI": 0.11759920634920634
+   },
+   "coverage_by_class": {
+    "GorillaFileSystem": 0,
+    "TradingBot": 0,
+    "TravelAPI": 0.05,
+    "VehicleControlAPI": 0
+   },
+   "full_docs": 5,
+   "input_tokens": 94977.95625
+  }
+ }
+}

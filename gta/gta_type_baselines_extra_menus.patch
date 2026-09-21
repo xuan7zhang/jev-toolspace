@@ -1,0 +1,12 @@
+--- /datasets/omni_pretraining/gta2/scripts_extra/gta_type_baselines.py.bak_0921jev	2026-09-21 18:53:21.062428113 -0400
++++ /datasets/omni_pretraining/gta2/scripts_extra/gta_type_baselines.py	2026-09-21 18:53:21.082523413 -0400
+@@ -265,6 +265,9 @@
+             accK = {K: tr(m) for K, m in cand.items()}; Kst = min(accK, key=lambda K: (-accK[K], K))
+             menus["lots_kfull"] = {k: cand[Kst] for k in test}
+             kfull = {"order": order, "train_acc_by_K": accK, "K_star": Kst, "menu": cand[Kst] or "FULL MENU"}; print(f"[{a.tag}] {ttype} lots_kfull: {kfull}", flush=True)
++        # External menus (e.g. Jev spaces, jev/gta_run.py): GTA_EXTRA_MENUS="name=path_with_{type},..." -> test id -> tool list
++        for spec in filter(None, os.environ.get("GTA_EXTRA_MENUS", "").split(",")):
++            nm, pth = spec.split("=", 1); m = json.load(open(pth.replace("{type}", ttype))); menus[nm] = {k: m[str(k)] for k in test}
+         if ARMS: menus = {arm: mm for arm, mm in menus.items() if arm in ARMS}
+         res = {}; FS = ("_" + a.fresh) if a.fresh else ""
+         for arm, mm in menus.items():
