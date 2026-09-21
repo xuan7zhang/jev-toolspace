@@ -1,0 +1,45 @@
+--- /datasets/omni_pretraining/wt_tgb/jev/.eval_baseline_masks.py.orig	2026-09-21 14:03:57.039018271 -0400
++++ /datasets/omni_pretraining/wt_tgb/tgb/eval_baseline_masks.py	2026-09-21 14:03:57.059328965 -0400
+@@ -33,6 +33,8 @@
+     ap.add_argument("--fit-tokens", type=int, default=0)
+     ap.add_argument("--fit-passes", type=int, default=1)
+     ap.add_argument("--fit-seconds", type=float, default=0.0)
++    ap.add_argument("--extra-mask", action="append", default=[],
++                    help="NAME=PATH, evaluated in the same session as --mask and full")
+     a = ap.parse_args()
+ 
+     tools_v2.register()
+@@ -47,9 +49,12 @@
+         raise RuntimeError(f"expected 3200 family-held-out tasks, got {len(test)}")
+ 
+     mask = json.load(open(a.mask))
+-    missing = [task["id"] for task in test if task["id"] not in mask]
+-    if missing:
+-        raise ValueError(f"mask misses {len(missing)} held-out task ids")
++    extra = dict(spec.split("=", 1) for spec in a.extra_mask)
++    extra = {name: json.load(open(path)) for name, path in extra.items()}
++    for name, m in [(a.method, mask)] + list(extra.items()):
++        missing = [task["id"] for task in test if task["id"] not in m]
++        if missing:
++            raise ValueError(f"mask {name} misses {len(missing)} held-out task ids")
+ 
+     with tempfile.TemporaryDirectory(prefix="tgb_baseline_") as tmp:
+         for task in test:
+@@ -112,6 +117,8 @@
+ 
+         arm = run(a.method, lambda task: mask[task["id"]])
+         full = run("full", lambda task: FULL_MENU_V4)
++        extra_arms = {name: run(name, lambda task, m=m: m[task["id"]])
++                      for name, m in extra.items()}
+ 
+     saved = full["prompt_tokens_per_request"] - arm["prompt_tokens_per_request"]
+     result = {
+@@ -119,7 +126,7 @@
+         "model": a.tag, "method": a.method,
+         "selection": {"prefill_tokens": a.fit_tokens, "passes": a.fit_passes,
+                       "wall_seconds": a.fit_seconds},
+-        "heldout": {a.method: arm, "full": full},
++        "heldout": {a.method: arm, "full": full, **extra_arms},
+         "token_efficiency": {
+             "serving_convention": "complete wrapped input prompt over all 3,200 test requests",
+             "tokens_saved_per_request": saved,

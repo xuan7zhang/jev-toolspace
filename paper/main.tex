@@ -1,0 +1,221 @@
+% =====================================================================
+% Jev on TGB: an external relevance judge for task-level tool spaces
+% TEA template (tea.cls), pdflatex + bibtex
+% compiles from this folder or from the project root (Overleaf main document = jev_eval/main.tex)
+% =====================================================================
+\makeatletter\def\input@path{{jev_eval/}}\makeatother
+\documentclass[11pt]{tea}
+\graphicspath{{jev_eval/}}
+
+\usepackage{url}
+\let\Bbbk\relax
+\let\openbox\relax
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{float}
+
+\newcommand{\JA}{Jev-A}
+\newcommand{\JB}{Jev-B}
+\newcommand{\JC}{Jev-C}
+\newcommand{\tool}[1]{\texttt{#1}}
+\newcommand{\task}[1]{\texttt{\detokenize{#1}}}
+
+\title{What Must a Relevance Judge See? Evaluating Jev for Task-Level Tool Selection}
+
+\date{September 2026}
+
+\abstract{
+Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07.
+}
+
+\begin{document}
+\maketitle
+
+% ---------------------------------------------------------------------
+\section{Introduction}
+
+A tool-using language model is usually served with every tool in its registry \citep{toolformer,gorilla,qin2024toolllm}. For requests that recur within a task, a smaller task-specific space removes distractor tools and shortens every prompt. Building that space means deciding which tools a task needs. Retrieval methods decide from tool descriptions \citep{xiao2024cpack,tool2vec}; trace-based methods decide from what the tools returned and what the model answered \citep{zheng2023judging}.
+
+We ask whether an external relevance model can make this decision. Jev \citep{jevdocs} answers yes/no questions about a shared input with independent probabilities, so one call can score every tool in a registry, and each tool's score stands on its own. It is also cheap (\$0.042 per million input tokens) and fast (about 0.3 seconds per call). We evaluate it on TGB \citep{tgb2026} with a fixed executor and find:
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item From the request and tool descriptions, Jev picks the downstream tools but often misses the upstream data source, which breaks the chain.
+  \item Averaging these judgments over a task makes them worse, because the same mistake repeats on every request.
+  \item From execution traces, Jev selects every required tool and improves on serving all tools by 11.2 points.
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\section{Setup}
+
+\paragraph{Benchmark.}
+TGB has 4,000 text-only requests in ten families of 400 \citep{tgb2026}. Each request is built from a hidden scene (a table, sensor series, calendar, or document corpus) that only the tools can read. Eight families need a chain of two or three tools (Table~\ref{tab:families}); \task{compute_only} and \task{no_tool} are controls. The registry has 15 tools: seven chain tools and eight distractors. Every served tool runs once per request, the chain passes outputs downstream, and the executor sees one line \tool{<Tool>: <output>} per served tool. Accuracy is exact match with the gold answer.
+
+\begin{table}[t]
+\centering\small
+\caption{TGB families and the budget $K$ shared by all methods.}
+\label{tab:families}
+\begin{tabular}{@{}llc@{}}
+\toprule
+Family & Chain & $K$ \\
+\midrule
+\task{table_total}, \task{table_filter} & \tool{TableQuery} $\to$ \tool{Calculator} & 2 \\
+\task{sensor_mean}, \task{sensor_convert} & \tool{SensorAPI} $\to$ \tool{Calculator} & 14 \\
+\task{schedule_gap} & \tool{CalendarAPI} $\to$ \tool{Calculator} & 9 \\
+\task{doc_two_facts} & \tool{DocRetrieve} $\to$ \tool{Calculator} & 2 \\
+\task{translate_fact} & \tool{DocRetrieve} $\to$ \tool{Translate} & 3 \\
+\task{fx_settle} & \tool{DocRetrieve} $+$ \tool{ExchangeRate} $\to$ \tool{Calculator} & 3 \\
+\task{compute_only} & \tool{Calculator} (optional) & 1 \\
+\task{no_tool} & none & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Protocol.}
+In each family the first 80 requests are used to build spaces and the remaining 320 are evaluated (3,200 in total). The executor is Qwen2.5-7B-Instruct with greedy decoding. Every method keeps the same number of tools per family, a budget $K$ fixed in advance from accuracy on the build requests (Table~\ref{tab:families}). All methods are evaluated in one session on the same requests.
+
+\paragraph{Jev.}
+One call scores all 15 tools, with one yes/no question per tool. Tools are described by the first line of their docstring, as in the other baselines; \tool{ExchangeRate} and \tool{Barcode} have no docstring and appear by name. The model version was \texttt{jev-1.13.0}. We test three settings (prompts in Appendix~\ref{app:prompts}):
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item \textbf{\JA{}, per request.} Jev reads an evaluation request and the tool descriptions and is asked whether each tool is needed, including tools whose output feeds another tool. The top $K$ tools serve that request.
+  \item \textbf{\JB{}, per task.} The same question on the family's 80 build requests; each tool's scores are averaged, and the top $K$ form a fixed space for the family.
+  \item \textbf{\JC{}, per task from traces.} Jev reads a build request, the tool outputs the executor saw, and the executor's answer, and is asked whether the answer relies on each tool's output. Scores are averaged and the top $K$ kept as in \JB{}.
+\end{itemize}
+
+\paragraph{Baselines.}
+\emph{Keep all} serves the 15 tools. \emph{Random} draws $K$ tools. \emph{Dense} \citep{xiao2024cpack} and \emph{Tool2Vec} \citep{tool2vec} rank tools by embedding similarity to the build requests. \emph{Trace judge} asks the executor itself which tools support its answer on the build traces \citep{zheng2023judging}. \JC{} and Trace judge read the same traces.
+
+% ---------------------------------------------------------------------
+\section{Results}
+
+\begin{table}[t]
+\centering\small
+\caption{Accuracy averaged over families (3,200 evaluation requests). Coverage: share of requests whose space contains the complete tool chain. Tokens: executor prompt length per request.}
+\label{tab:main}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Method & Accuracy & vs.\ Keep all & Coverage & Tokens \\
+\midrule
+Keep all & 69.5 & 0.0 & 1.00 & 271 \\
+Random & 23.5 & $-46.0$ & 0.22 & 117 \\
+Dense & 24.9 & $-44.6$ & 0.22 & 122 \\
+Tool2Vec & 38.1 & $-31.4$ & 0.44 & 123 \\
+Trace judge & 67.6 & $-1.9$ & 0.89 & 156 \\
+\midrule
+\JA{} (per request) & 60.3 & $-9.2$ & 0.73 & 147 \\
+\JB{} (per task) & 55.2 & $-14.3$ & 0.67 & 141 \\
+\JC{} (per task, traces) & \textbf{80.7} & $+11.2$ & 1.00 & 165 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figs/fig_main.pdf}
+\caption{Accuracy of each method at the same budget. Dashed line: Keep all.}
+\label{fig:main}
+\end{figure}
+
+Table~\ref{tab:main} and Figure~\ref{fig:main} summarize the results. Among the reduced spaces, accuracy follows coverage: \JC{}, which always contains the complete chain, scores above Keep all, and every space that misses the chain on a tenth of the requests or more falls below it. Figure~\ref{fig:family} shows each family.
+
+\subsection{From requests, Jev misses the data source}
+
+\begin{figure}[t]
+\centering
+\begin{minipage}[c]{0.46\linewidth}
+\includegraphics[width=\linewidth]{figs/fig_sources.pdf}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.5\linewidth}
+\captionof{figure}{Mean \JA{} score of the required data source (green) and the tool that replaces it (orange) in the three families where \JA{} fails.}
+\label{fig:sources}
+\end{minipage}
+\end{figure}
+
+\JA{} gives the required tools an average score of 0.77 and the other tools 0.12, and it always selects \tool{Calculator}, the last step of most chains. Its mistakes fall on the first step. In three families it replaces the data source with a similar retrieval tool (Figure~\ref{fig:sources}):
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+  \item \task{fx_settle}: \tool{GoogleSearch} (0.58) replaces \tool{ExchangeRate} (0.39), which has no description, on 270 of 320 requests.
+  \item \task{table_total}: \tool{DocRetrieve} (0.64) replaces \tool{TableQuery} (0.61) on 232 requests.
+  \item \task{doc_two_facts}: \tool{TableQuery} (0.70) replaces \tool{DocRetrieve} (0.69) on 203 requests.
+\end{itemize}
+Without its source, the chain cannot compute the answer, and accuracy in these families drops to 0.3\%, 22.5\%, and 28.4\%. In the other families \JA{} is close to Keep all or better.
+
+\subsection{Averaging over a task repeats the mistake}
+
+Jev gives nearly the same score to a tool on every request of a family, so \JA{}'s mistakes are the same mistake repeated. Averaging over the build requests turns these near ties into a fixed wrong choice for the whole family: \JB{} keeps \tool{DocRetrieve} in \task{table_total} and \tool{TableQuery} in \task{doc_two_facts}, and both families fall to 0\%. \JB{} scores 55.2\%, below \JA{} at 60.3\%.
+
+\subsection{From traces, Jev finds every required tool}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figs/fig_family.pdf}
+\caption{Accuracy (\%) per family on the 320 evaluation requests of each family.}
+\label{fig:family}
+\end{figure}
+
+With the tool outputs and the answer in view, Jev scores the required tools at 0.78 on average and every other tool at 0.02, and upstream sources score as high as downstream steps. \JC{} contains the complete chain in every family and reaches 80.7\%, recovering \task{doc_two_facts} (99.4\%), \task{fx_settle} (62.8\%), and \task{table_total} (84.1\%). The Trace judge reads the same traces through the executor and reaches 67.6\%.
+
+The remaining errors of \JC{} come from the extra tools that fill the budget in families with a large $K$. Jev gives every non-required tool about the same low score, so the order among distractors carries little information. In \task{sensor_mean} ($K=14$), \JC{} drops \tool{ExchangeRate} and scores 59.7\% (Keep all: 51.9\%); in \task{schedule_gap} ($K=9$) it scores 75.0\% (Keep all: 65.3\%). Ranking distractors by how much they hurt the executor is the part that traces read by Jev leave open.
+
+\subsection{Cost}
+
+\begin{table}[t]
+\centering\small
+\caption{Cost of the Jev settings at \$0.042 per million input tokens. Latency is per call.}
+\label{tab:cost}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Method & Build once & Per evaluation request \\
+\midrule
+\JA{} & none & 1 call, \$0.00008, 0.31 s \\
+\JB{} & 800 calls, \$0.061 & none \\
+\JC{} & 800 calls, \$0.073 & none \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:cost} lists the cost. A Jev task space costs \$0.06 to \$0.07 to build for all ten families and adds nothing per request. \JA{} adds one call and 0.31 seconds to every request, \$0.25 over the 3,200 evaluation requests. Every method at the same budget shortens the executor prompt from 271 tokens to 117 to 165.
+
+% ---------------------------------------------------------------------
+\section{Conclusion}
+
+An external relevance judge can build good task spaces if it reads the execution trace. From requests and tool descriptions, Jev confuses similar data sources, and averaging over a task keeps the confusion. From traces, Jev selects every required tool for a few cents and improves on serving all tools by 11.2 points. The next steps are ranking distractors, more executors, larger registries, and BFCL and GTA.
+
+\bibliographystyle{plainnat}
+\IfFileExists{jev_eval/refs.bib}{\bibliography{jev_eval/refs}}{\bibliography{refs}}
+
+\beginappendix
+
+\section{Prompts}
+\label{app:prompts}
+
+\paragraph{\JA{} and \JB{}.} Input: the request and the 15 tool descriptions. One question per tool \texttt{T}:
+\begin{quote}\small\ttfamily
+For the user request `request`, would an agent need to call the tool T (described in `tools`) to answer it correctly? Count a tool as needed if its output is required at any step, including intermediate steps whose result feeds another tool. Judge only from the request and the tool descriptions.
+\end{quote}
+
+\paragraph{\JC{}.} Input: the request, the tool outputs the executor saw, and the executor's answer. One question per tool \texttt{T}:
+\begin{quote}\small\ttfamily
+An assistant answered the request `request` after seeing the outputs in `tool\_outputs` and gave the final answer `answer`. Does that answer rely on the output of the tool T? Say yes if the answer uses information that appears in that tool's output, directly or through another tool's output that was computed from it. Do not judge whether the answer is correct and do not answer the request yourself.
+\end{quote}
+
+\section{Task spaces}
+
+\begin{table}[H]
+\centering\small
+\caption{Jev task spaces in the families where \JB{} and \JC{} differ. Chain tools in bold; for $K=14$ the dropped tool is listed.}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lp{4.8cm}p{4.8cm}@{}}
+\toprule
+Family & \JB{} & \JC{} \\
+\midrule
+\task{doc_two_facts} & \textbf{Calculator}, TableQuery & \textbf{DocRetrieve}, \textbf{Calculator} \\
+\task{fx_settle} & \textbf{Calculator}, \textbf{DocRetrieve}, GoogleSearch & \textbf{DocRetrieve}, \textbf{Calculator}, \textbf{ExchangeRate} \\
+\task{table_total} & \textbf{Calculator}, DocRetrieve & \textbf{Calculator}, \textbf{TableQuery} \\
+\task{translate_fact} & \textbf{DocRetrieve}, \textbf{Translate}, Calculator & \textbf{Translate}, \textbf{DocRetrieve}, Barcode \\
+\task{sensor_mean} & all but CurrencyConvert & all but ExchangeRate \\
+\task{sensor_convert} & all but DurationCalc & all but CurrencyConvert \\
+\task{no_tool} & Calculator & Barcode \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

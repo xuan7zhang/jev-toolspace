@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+jev_cache.jsonl
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+paper/main.pdf
+.env
+*_api_env
