@@ -57,7 +57,9 @@ rows = ["Keep all", "No tools", "Random", "BM25", "Dense", "Tool2Vec", "LLM as r
 garm = {"Keep all": "full", "No tools": "notools", "Random": "random", "BM25": "bm25", "Dense": "dense", "Tool2Vec": "tool2vec", "LLM as router": "router", "TTO": "tto", "Beam Search": "beam", "Jev-A (per request)": "jevA", "Jev-B (per task)": "jevB", "Jev-C (per task, traces)": "jevC"}
 cells = {}; cols = []; heads = []
 for tag, name in gta_models:
-    d = ld(f"{IO}/typebase1_{tag}_jva.json")
+    d = ld(f"{IO}/typebase1_{tag}_jva.json") or {}
+    dc = ld(f"{IO}/typebase1_{tag}_jvac.json") or {}
+    if "count_arith" not in d and "count_arith" in dc: d["count_arith"] = dc["count_arith"]
     for ty, short in (("read_arith", "read"), ("count_arith", "count")):
         c = f"{tag}:{ty}"; cols.append(c); heads.append(short)
         if d and ty in d:
