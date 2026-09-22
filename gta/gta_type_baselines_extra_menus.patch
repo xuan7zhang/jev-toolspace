@@ -1,5 +1,14 @@
 --- /datasets/omni_pretraining/gta2/scripts_extra/gta_type_baselines.py.bak_0921jev	2026-09-21 18:53:21.062428113 -0400
-+++ /datasets/omni_pretraining/gta2/scripts_extra/gta_type_baselines.py	2026-09-21 18:53:21.082523413 -0400
++++ /datasets/omni_pretraining/gta2/scripts_extra/gta_type_baselines.py	2026-09-22 00:18:42.501588860 -0400
+@@ -157,7 +157,7 @@
+     if a.fresh: sp_out = (f"{OUT}/typebase_{a.tag}" if SPLIT == "f20" else f"{OUT}/typebase1_{a.tag}") + f"_{a.fresh}.json"   # a partial run never overwrites the full table
+     if os.path.exists(sp_out): summary = json.load(open(sp_out))
+     for ttype in a.types.split(","):
+-        train, test = split_of(ttype); pre = f"{pfx}_{a.tag}_{ttype}" + ("_srch" if os.environ.get("GTA_USE_API") == "1" and a.fresh in ("apik", "apif", "apiu", "apip", "apiw") else "")   # search-enabled fitting runs never share a cache entry with search-disabled ones
++        train, test = split_of(ttype); pre = f"{pfx}_{a.tag}_{ttype}" + ("_srch" if os.environ.get("GTA_USE_API") == "1" and (a.fresh in ("apik", "apif", "apiu", "apip", "apiw") or os.environ.get("GTA_SRCH") == "1") else "")   # search-enabled fitting runs never share a cache entry with search-disabled ones
+         print(f"[{a.tag}] {ttype}: train {len(train)} test {len(test)}", flush=True)
+         if a.train_full:
+             rid = f"{pre}_trfull{('_' + a.fresh) if a.fresh else ''}"; run(rid, train, lambda k: [])
 @@ -265,6 +265,9 @@
              accK = {K: tr(m) for K, m in cand.items()}; Kst = min(accK, key=lambda K: (-accK[K], K))
              menus["lots_kfull"] = {k: cand[Kst] for k in test}

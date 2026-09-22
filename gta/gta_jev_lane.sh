@@ -32,7 +32,7 @@ for i in $(seq 1 90); do [ "$(probe http://127.0.0.1:$TPORT/docs)" = "200" ] && 
 echo "=== $TAG services up $(date +%H:%M)"
 timeout 86400 srun --overlap --jobid=$JOB --nodes=1 --ntasks=1 --cpus-per-task=4 bash -c "
 source $S/common_env.sh; conda activate \$GTA_BIG/envs/opencompass
-export ${APIX}GTA_EXTRA_MENUS=${GTA_EXTRA_MENUS:-} GTA_TRAJ_SFX=${GTA_TRAJ_SFX:-} ${GTA_GEMMA_ADAPTER:+GTA_GEMMA_ADAPTER=1} GTA_OBS_ROLE=${GTA_OBS_ROLE:-system} GTA_MODEL_NAME=$TAG GTA_LLM_URL=http://127.0.0.1:$LPORT/v1/chat/completions GTA_TOOLSERVER=http://127.0.0.1:$PPORT GTA_EVAL_MODES=end GTA_TOOLMETA=\$GTA_BIG/data/gta_dataset/toolmeta.json GTA_TEMP=0 GTA_ROUTER_PORT=$LPORT
+export ${APIX}GTA_SRCH=${GTA_SRCH:-0} GTA_EXTRA_MENUS=${GTA_EXTRA_MENUS:-} GTA_TRAJ_SFX=${GTA_TRAJ_SFX:-} ${GTA_GEMMA_ADAPTER:+GTA_GEMMA_ADAPTER=1} GTA_OBS_ROLE=${GTA_OBS_ROLE:-system} GTA_MODEL_NAME=$TAG GTA_LLM_URL=http://127.0.0.1:$LPORT/v1/chat/completions GTA_TOOLSERVER=http://127.0.0.1:$PPORT GTA_EVAL_MODES=end GTA_TOOLMETA=\$GTA_BIG/data/gta_dataset/toolmeta.json GTA_TEMP=0 GTA_ROUTER_PORT=$LPORT
 cd $X && python3 gta_type_baselines.py --tag ${MENU_TAG} --types ${TYPES:-web_fact,count_arith} ${SPLIT:+--split $SPLIT} ${ARMS:+--arms $ARMS} ${FRESH:+--fresh $FRESH} ${EXTRA_ARGS:-}"
 rc=$?
 for s in $S_L $S_T $S_P; do tmux kill-session -t $s 2>/dev/null; done

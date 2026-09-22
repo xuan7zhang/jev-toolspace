@@ -54,6 +54,15 @@ KEY=qwen2.5-7b MODEL=<dir> NAME=Qwen2.5-7B-Instruct GPU=1 PORT=8951 JOB=<slurm j
 python -m jev.bfcl_metrics --key qwen2.5-7b
 ```
 
+## Results (Qwen2.5-7B executor)
+| Benchmark | Keep all | Best baseline | Jev-A | Jev-B | Jev-C |
+|---|---|---|---|---|---|
+| TGB (macro acc, 3,200 requests) | 69.5 | Trace judge 67.6 | 60.3 | 55.2 | **80.7** |
+| BFCL multi-turn (160 records, 3 runs) | 11.3 | Tool2Vec 13.8 | 16.3 | **17.3** | 12.5 |
+| GTA read_arith / count_arith / web_fact (32 / 15 / 17) | 6.3 / 0.0 / 0.0 | 12.5 / 6.7 / 11.8 | **15.6** / 6.7 / 0.0 | 9.4 / **20.0** / 0.0 | 9.4 / 6.7 / 5.9 |
+
+Details, per-run numbers and cost are in `paper/main.tex` and `results/`.
+
 ## Cost
 Jev input costs $0.042 per million tokens, and output tokens are free.
 - TGB: all three settings together take 4,800 calls, about $0.38.
