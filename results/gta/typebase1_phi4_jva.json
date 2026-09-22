@@ -1,0 +1,741 @@
+{
+ "read_arith": {
+  "n_train": 33,
+  "n_test": 32,
+  "test_acc": {
+   "notools": 6.25,
+   "full": 15.62,
+   "random": 3.12,
+   "router": 12.5,
+   "bm25": 6.25,
+   "tto": 21.88,
+   "beam": 18.75,
+   "tool2vec": 21.88,
+   "dense": 3.12,
+   "jevA": 15.62,
+   "jevB": 18.75,
+   "jevC": 15.62
+  },
+  "menus": {
+   "tto": [
+    "OCR",
+    "Solver"
+   ],
+   "elim": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ],
+   "beam": [
+    "OCR",
+    "Solver"
+   ]
+  },
+  "tto_trace": [
+   [
+    [
+     "OCR"
+    ],
+    15.151515151515152
+   ],
+   [
+    [
+     "OCR",
+     "Solver"
+    ],
+    30.303030303030305
+   ]
+  ],
+  "elim_trace": [],
+  "train_acc": {
+   "singles": {
+    "OCR": 15.151515151515152,
+    "ImageDescription": 6.0606060606060606,
+    "Calculator": 9.090909090909092,
+    "CountGivenObject": 9.090909090909092,
+    "RegionAttributeDescription": 9.090909090909092,
+    "TextToBbox": 9.090909090909092,
+    "Solver": 6.0606060606060606
+   },
+   "pairs": {
+    "ImageDescription+OCR": 18.181818181818183,
+    "Calculator+OCR": 24.242424242424242,
+    "CountGivenObject+OCR": 12.121212121212121,
+    "OCR+RegionAttributeDescription": 18.181818181818183,
+    "OCR+TextToBbox": 18.181818181818183,
+    "OCR+Solver": 30.303030303030305,
+    "Calculator+ImageDescription": 6.0606060606060606,
+    "Calculator+CountGivenObject": 12.121212121212121,
+    "Calculator+RegionAttributeDescription": 9.090909090909092,
+    "Calculator+TextToBbox": 6.0606060606060606,
+    "Calculator+Solver": 3.0303030303030303,
+    "CountGivenObject+ImageDescription": 12.121212121212121,
+    "CountGivenObject+RegionAttributeDescription": 9.090909090909092,
+    "CountGivenObject+TextToBbox": 6.0606060606060606,
+    "CountGivenObject+Solver": 6.0606060606060606,
+    "ImageDescription+RegionAttributeDescription": 9.090909090909092,
+    "RegionAttributeDescription+TextToBbox": 9.090909090909092,
+    "RegionAttributeDescription+Solver": 6.0606060606060606,
+    "ImageDescription+TextToBbox": 6.0606060606060606,
+    "Solver+TextToBbox": 9.090909090909092
+   }
+  },
+  "router_menus": {
+   "3": [
+    "Calculator"
+   ],
+   "25": [
+    "Calculator"
+   ],
+   "27": [
+    "Calculator"
+   ],
+   "29": [
+    "Calculator"
+   ],
+   "37": [
+    "OCR"
+   ],
+   "50": [
+    "OCR",
+    "Calculator"
+   ],
+   "52": [
+    "OCR",
+    "Calculator"
+   ],
+   "77": [
+    "OCR"
+   ],
+   "92": [
+    "Calculator"
+   ],
+   "95": [
+    "OCR"
+   ],
+   "97": [
+    "Calculator"
+   ],
+   "99": [
+    "OCR",
+    "Calculator"
+   ],
+   "101": [
+    "OCR",
+    "Calculator"
+   ],
+   "103": [
+    "OCR",
+    "Calculator"
+   ],
+   "105": [
+    "Calculator"
+   ],
+   "107": [
+    "Calculator"
+   ],
+   "109": [
+    "Calculator"
+   ],
+   "111": [
+    "OCR",
+    "Calculator"
+   ],
+   "114": [
+    "OCR",
+    "ImageDescription"
+   ],
+   "116": [
+    "OCR",
+    "Calculator",
+    "RegionAttributeDescription"
+   ],
+   "130": [
+    "OCR",
+    "Calculator"
+   ],
+   "132": [
+    "OCR",
+    "Calculator"
+   ],
+   "134": [
+    "OCR",
+    "Calculator"
+   ],
+   "136": [
+    "OCR",
+    "Calculator"
+   ],
+   "138": [
+    "OCR",
+    "Calculator"
+   ],
+   "160": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator",
+    "ImageDescription"
+   ],
+   "194": [
+    "Calculator"
+   ],
+   "198": [
+    "OCR",
+    "Calculator"
+   ],
+   "201": [
+    "OCR",
+    "Calculator"
+   ],
+   "203": [
+    "Calculator"
+   ],
+   "211": [
+    "Calculator"
+   ],
+   "217": [
+    "OCR",
+    "Calculator"
+   ]
+  },
+  "bm25_menus": {
+   "3": [
+    "Solver",
+    "CountGivenObject"
+   ],
+   "25": [
+    "Solver",
+    "RegionAttributeDescription"
+   ],
+   "27": [
+    "Solver",
+    "TextToBbox"
+   ],
+   "29": [
+    "Calculator",
+    "Solver"
+   ],
+   "37": [
+    "OCR",
+    "Solver"
+   ],
+   "50": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "52": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "77": [
+    "Calculator",
+    "CountGivenObject"
+   ],
+   "92": [
+    "Calculator",
+    "Solver"
+   ],
+   "95": [
+    "Calculator",
+    "Solver"
+   ],
+   "97": [
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "99": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "101": [
+    "OCR",
+    "Calculator"
+   ],
+   "103": [
+    "OCR",
+    "Calculator"
+   ],
+   "105": [
+    "Calculator",
+    "Solver"
+   ],
+   "107": [
+    "Calculator",
+    "Solver"
+   ],
+   "109": [
+    "Calculator",
+    "Solver"
+   ],
+   "111": [
+    "Solver",
+    "TextToBbox"
+   ],
+   "114": [
+    "OCR",
+    "Calculator"
+   ],
+   "116": [
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "130": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "132": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "134": [
+    "OCR",
+    "TextToBbox"
+   ],
+   "136": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "138": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "160": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "194": [
+    "Calculator",
+    "Solver"
+   ],
+   "198": [
+    "Solver",
+    "CountGivenObject"
+   ],
+   "201": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "203": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "211": [
+    "Calculator",
+    "ImageDescription"
+   ],
+   "217": [
+    "TextToBbox",
+    "Solver"
+   ]
+  },
+  "tool2vec_menus": {
+   "3": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "25": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "27": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "29": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "37": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "50": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "52": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "77": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "92": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "95": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "97": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "99": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "101": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "103": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "105": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "107": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "109": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "111": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "114": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "116": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "130": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "132": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "134": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "136": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "138": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "160": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "194": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "198": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "201": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "203": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "211": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "217": [
+    "OCR",
+    "CountGivenObject"
+   ]
+  },
+  "lots_menu": null,
+  "lots_traj_k": null,
+  "lots_kfull": null
+ },
+ "count_arith": {
+  "n_train": 15,
+  "n_test": 15,
+  "test_acc": {
+   "notools": 6.67,
+   "full": 6.67,
+   "random": 0.0,
+   "router": 0.0,
+   "bm25": 0.0,
+   "tto": 13.33,
+   "beam": 0.0,
+   "tool2vec": 0.0,
+   "dense": 0.0,
+   "jevA": 0.0,
+   "jevB": 0.0,
+   "jevC": 13.33
+  },
+  "menus": {
+   "tto": [
+    "ImageDescription"
+   ],
+   "elim": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ],
+   "beam": [
+    "ImageDescription",
+    "Solver"
+   ]
+  },
+  "tto_trace": [
+   [
+    [
+     "ImageDescription"
+    ],
+    20.0
+   ]
+  ],
+  "elim_trace": [],
+  "train_acc": {
+   "singles": {
+    "OCR": 6.666666666666667,
+    "ImageDescription": 20.0,
+    "Calculator": 0.0,
+    "CountGivenObject": 13.333333333333334,
+    "RegionAttributeDescription": 6.666666666666667,
+    "TextToBbox": 6.666666666666667,
+    "Solver": 0.0
+   },
+   "pairs": {
+    "ImageDescription+OCR": 13.333333333333334,
+    "Calculator+ImageDescription": 20.0,
+    "CountGivenObject+ImageDescription": 0.0,
+    "ImageDescription+RegionAttributeDescription": 13.333333333333334,
+    "ImageDescription+TextToBbox": 13.333333333333334,
+    "ImageDescription+Solver": 20.0,
+    "CountGivenObject+OCR": 6.666666666666667,
+    "Calculator+CountGivenObject": 13.333333333333334,
+    "CountGivenObject+RegionAttributeDescription": 6.666666666666667,
+    "CountGivenObject+TextToBbox": 0.0,
+    "CountGivenObject+Solver": 6.666666666666667,
+    "Calculator+OCR": 0.0,
+    "OCR+RegionAttributeDescription": 0.0,
+    "OCR+TextToBbox": 13.333333333333334,
+    "OCR+Solver": 0.0,
+    "Calculator+RegionAttributeDescription": 0.0,
+    "RegionAttributeDescription+TextToBbox": 6.666666666666667,
+    "RegionAttributeDescription+Solver": 0.0,
+    "Calculator+TextToBbox": 6.666666666666667,
+    "Solver+TextToBbox": 13.333333333333334
+   }
+  },
+  "router_menus": {
+   "2": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "5": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "17": [
+    "OCR",
+    "Calculator"
+   ],
+   "19": [
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "83": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "85": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "87": [
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "89": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "178": [
+    "OCR",
+    "CountGivenObject"
+   ],
+   "180": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "182": [
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "184": [
+    "Calculator"
+   ],
+   "191": [
+    "Calculator"
+   ],
+   "204": [
+    "OCR",
+    "Calculator"
+   ],
+   "219": [
+    "OCR",
+    "CountGivenObject",
+    "Calculator"
+   ]
+  },
+  "bm25_menus": {
+   "2": [
+    "CountGivenObject",
+    "Solver"
+   ],
+   "5": [
+    "TextToBbox",
+    "Solver"
+   ],
+   "17": [
+    "Solver",
+    "TextToBbox"
+   ],
+   "19": [
+    "CountGivenObject",
+    "RegionAttributeDescription"
+   ],
+   "83": [
+    "RegionAttributeDescription",
+    "CountGivenObject"
+   ],
+   "85": [
+    "CountGivenObject",
+    "RegionAttributeDescription"
+   ],
+   "87": [
+    "CountGivenObject",
+    "Calculator"
+   ],
+   "89": [
+    "CountGivenObject",
+    "Solver"
+   ],
+   "178": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "180": [
+    "Solver",
+    "OCR"
+   ],
+   "182": [
+    "OCR",
+    "RegionAttributeDescription"
+   ],
+   "184": [
+    "Solver",
+    "CountGivenObject"
+   ],
+   "191": [
+    "Solver",
+    "Calculator"
+   ],
+   "204": [
+    "Solver",
+    "OCR"
+   ],
+   "219": [
+    "CountGivenObject",
+    "Calculator"
+   ]
+  },
+  "tool2vec_menus": {
+   "2": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "5": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "17": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "19": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "83": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "85": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "87": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "89": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "178": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "180": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "182": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "184": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "191": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "204": [
+    "CountGivenObject",
+    "OCR"
+   ],
+   "219": [
+    "CountGivenObject",
+    "OCR"
+   ]
+  },
+  "lots_menu": null,
+  "lots_traj_k": null,
+  "lots_kfull": null
+ }
+}

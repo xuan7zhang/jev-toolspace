@@ -35,19 +35,22 @@ rows = ["Full documentation", "Random", "BM25", "Dense", "Usage Frequency", "Too
 barm = {"Random": "random", "BM25": "bm25", "Dense": "dense", "Usage Frequency": "usage", "Tool2Vec": "tool2vec", "LLM as router": "router"}
 jarm = {"Jev-A (per request)": "jevA", "Jev-B (per task)": "jevB", "Jev-C (per task, traces)": "jevC"}
 cells = {}
-def mean3(runs, key):
-    v = [runs[f"{key}_r{i}"]["acc"] for i in range(3) if f"{key}_r{i}" in runs and runs[f"{key}_r{i}"].get("acc") is not None]; return st.mean(v) if v else None
+PART = set()
+def mean3(runs, key, tagc=None):
+    v = [runs[f"{key}_r{i}"]["acc"] for i in range(3) if f"{key}_r{i}" in runs and runs[f"{key}_r{i}"].get("acc") is not None]
+    if v and len(v) < 3 and tagc: PART.add(tagc)
+    return st.mean(v) if v else None
 for key, name in bf_models:
     j = ld(f"{R}/jev/eval_{key}.json"); b = ld(f"{R}/jev/eval_base_{key}.json"); rt = ld(f"{R}/jev/eval_base_router_{key}.json")
-    if j: cells[("Full documentation", key)] = mean3(j["runs"], "full")
+    if j: cells[("Full documentation", key)] = mean3(j["runs"], "full", key)
     for r, a in jarm.items():
-        if j: cells[(r, key)] = mean3(j["runs"], a)
+        if j: cells[(r, key)] = mean3(j["runs"], a, key)
     for r, a in barm.items():
-        if b: cells[(r, key)] = mean3(b["runs"], a)
-    if rt and cells.get(("LLM as router", key)) is None: cells[("LLM as router", key)] = mean3(rt, "router")
+        if b: cells[(r, key)] = mean3(b["runs"], a, key)
+    if rt and cells.get(("LLM as router", key)) is None: cells[("LLM as router", key)] = mean3(rt, "router", key)
 open(f"{OUT}/bfcl.tex", "w").write(table(rows, [m[0] for m in bf_models], cells,
-    "BFCL multi-turn: accuracy (\\%) on the 160 test records, mean of three runs, one column per executor. Every method keeps full documentation for the same $K$ tools per API class (the router documents the tools it names per record); baselines and Jev were run in two sessions per executor, each with its own full-documentation run (the two agree within one record). Best reduced space in bold.",
-    "tab:bfcl", [m[1] for m in bf_models]))
+    "BFCL multi-turn: accuracy (\\%) on the 160 test records, mean of three runs, one column per executor. Every method keeps full documentation for the same $K$ tools per API class (the router documents the tools it names per record); baselines and Jev were run in two sessions per executor, each with its own full-documentation run (the two agree within one record). Best reduced space in bold. $^\\dagger$: fewer than three runs completed so far.",
+    "tab:bfcl", [m[1] + ("$^\\dagger$" if m[0] in PART else "") for m in bf_models]))
 # ---- GTA
 gta_models = [("3b", "Qwen2.5-3B"), ("7b", "Qwen2.5-7B"), ("q3_8b", "Qwen3-8B"), ("14b", "Qwen2.5-14B"), ("q35_9b", "Qwen3.5-9B"), ("phi4", "phi-4"), ("gemma4_12b", "Gemma4-12B")]
 rows = ["Keep all", "No tools", "Random", "BM25", "Dense", "Tool2Vec", "LLM as router", "TTO", "Beam Search", "MIDRULE", "Jev-A (per request)", "Jev-B (per task)", "Jev-C (per task, traces)"]

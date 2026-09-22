@@ -1,23 +1,23 @@
 \begin{table}[t]
 \centering\small\setlength{\tabcolsep}{3pt}
-\caption{BFCL multi-turn: accuracy (\%) on the 160 test records, mean of three runs, one column per executor. Every method keeps full documentation for the same $K$ tools per API class (the router documents the tools it names per record); baselines and Jev were run in two sessions per executor, each with its own full-documentation run (the two agree within one record). Best reduced space in bold.}
+\caption{BFCL multi-turn: accuracy (\%) on the 160 test records, mean of three runs, one column per executor. Every method keeps full documentation for the same $K$ tools per API class (the router documents the tools it names per record); baselines and Jev were run in two sessions per executor, each with its own full-documentation run (the two agree within one record). Best reduced space in bold. $^\dagger$: fewer than three runs completed so far.}
 \label{tab:bfcl}
 \fitwidth{
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-Method & Qwen2.5-7B & Qwen3-4B & Qwen3.5-4B & Qwen3.5-9B & Gemma4-12B & Phi-4-mini \\
+Method & Qwen2.5-7B & Qwen3-4B & Qwen3.5-4B & Qwen3.5-9B & Gemma4-12B$^\dagger$ & Phi-4-mini \\
 \midrule
-Full documentation & 11.2 & 18.8 & 13.8 & 23.8 & -- & 4.4 \\
-Random & 11.9 & -- & -- & -- & -- & -- \\
-BM25 & 12.1 & -- & -- & -- & -- & -- \\
-Dense & 12.9 & -- & -- & -- & -- & -- \\
-Usage Frequency & 12.7 & -- & -- & -- & -- & -- \\
-Tool2Vec & 13.8 & -- & -- & -- & -- & -- \\
-LLM as router & 13.5 & -- & -- & -- & -- & -- \\
+Full documentation & 11.2 & 18.3 & 14.0 & 23.5 & 24.7 & 4.0 \\
+Random & 11.9 & 20.8 & 12.3 & 25.2 & 23.8 & 5.0 \\
+BM25 & 12.1 & \textbf{24.2} & 10.4 & 24.0 & 25.0 & 3.5 \\
+Dense & 12.9 & 17.9 & 11.0 & 22.5 & 24.4 & 3.8 \\
+Usage Frequency & 12.7 & \textbf{24.2} & 14.0 & 25.8 & 27.8 & 3.1 \\
+Tool2Vec & 13.8 & 20.8 & 14.0 & 28.3 & 24.4 & 4.8 \\
+LLM as router & 13.5 & 22.3 & 12.7 & \textbf{28.5} & \textbf{31.2} & 4.8 \\
 \midrule
-Jev-A (per request) & 16.2 & -- & 8.8 & -- & -- & \textbf{5.0} \\
-Jev-B (per task) & \textbf{17.3} & -- & \textbf{15.6} & -- & -- & \textbf{5.0} \\
-Jev-C (per task, traces) & 12.5 & -- & 12.5 & -- & -- & 3.1 \\
+Jev-A (per request) & 16.2 & 22.5 & 9.0 & 22.5 & 29.7 & \textbf{5.2} \\
+Jev-B (per task) & \textbf{17.3} & 23.3 & \textbf{16.0} & 26.5 & 24.4 & 5.0 \\
+Jev-C (per task, traces) & 12.5 & 18.3 & 13.1 & 26.2 & 25.6 & 4.0 \\
 \bottomrule
 \end{tabular}}
 \end{table}
