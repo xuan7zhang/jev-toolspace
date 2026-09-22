@@ -26,7 +26,7 @@
 \date{September 2026}
 
 \abstract{
-Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07. On BFCL multi-turn function calling, where every tool stays callable and the space decides which tools keep full documentation, the order reverses: spaces built from requests raise accuracy from 11.3\% to 16.3--17.3\%, above every baseline (at most 13.8\%), while spaces built from the executor's own traces reach 12.5\%, because those traces are mostly failed attempts. On GTA, where the executor answers few requests under any space, request-based Jev spaces again give the highest accuracy on two of three task types.
+Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07. On BFCL multi-turn function calling, where every tool stays callable and the space decides which tools keep full documentation, the order reverses: spaces built from requests raise accuracy from 11.3\% to 16.3--17.3\%, above every baseline (at most 13.8\%), while spaces built from the executor's own traces reach 12.5\%, because those traces are mostly failed attempts. On GTA, where the executor answers few requests under any space, request-based Jev spaces match or exceed the best baseline on the two task types that separate methods.
 }
 
 \begin{document}
@@ -43,7 +43,7 @@ We ask whether an external relevance model can make this decision. Jev \citep{je
   \item Averaging these judgments over a task makes them worse, because the same mistake repeats on every request.
   \item From execution traces, Jev selects every required tool and improves on serving all tools by 11.2 points.
   \item On BFCL, request-based spaces beat every baseline and trace-based spaces do not: the executor fails most build conversations, so its traces show the wrong tools.
-  \item On GTA, differences are one to three requests; request-based Jev spaces lead on two of three task types.
+  \item On GTA, differences are one to three requests; request-based Jev spaces match or exceed the best baseline where methods separate at all.
 \end{itemize}
 
 % ---------------------------------------------------------------------
@@ -225,31 +225,31 @@ GTA \citep{gta} serves image-based requests with a ReAct agent and an executable
 
 \begin{table}[t]
 \centering\small
-\caption{GTA accuracy (\%) with a two-tool space. One request is 3.1 points on \task{read_arith}, 6.7 on \task{count_arith}, and 5.9 on \task{web_fact}. Jev rows and the first Keep all value come from one session; the other rows come from earlier sessions on the same split, whose Keep all is given in parentheses.}
+\caption{GTA accuracy (\%) with a two-tool space, all methods in one session. One request is 3.1 points on \task{read_arith}, 6.7 on \task{count_arith}, and 5.9 on \task{web_fact}.}
 \label{tab:gta}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 Method & \task{read_arith} & \task{count_arith} & \task{web_fact} \\
 \midrule
-Keep all & 6.3 & 0.0 {\scriptsize(6.7)} & 0.0 {\scriptsize(0.0)} \\
+Keep all & 6.3 & 6.7 & 0.0 \\
 No tools & 0.0 & 0.0 & 5.9 \\
-Random & 9.4 & 6.7 & 0.0 \\
-BM25 & 3.1 & 6.7 & 5.9 \\
-Dense & 3.1 & 6.7 & 0.0 \\
+Random & 9.4 & 6.7 & 11.8 \\
+BM25 & 3.1 & 6.7 & 0.0 \\
+Dense & 3.1 & 13.3 & 0.0 \\
 Tool2Vec & 3.1 & 6.7 & 0.0 \\
 LLM as router & 3.1 & 6.7 & 0.0 \\
-TTO & 12.5 & 6.7 & 0.0 \\
-Beam Search & 12.5 & 0.0 & 11.8 \\
+TTO & 12.5 & 6.7 & 5.9 \\
+Beam Search & 12.5 & 0.0 & 5.9 \\
 \midrule
-\JA{} (per request) & \textbf{15.6} & 6.7 & 0.0 \\
-\JB{} (per task) & 9.4 & \textbf{20.0} & 0.0 \\
-\JC{} (per task, traces) & 9.4 & 6.7 & 5.9 \\
+\JA{} (per request) & 12.5 & \textbf{20.0} & 0.0 \\
+\JB{} (per task) & 12.5 & 13.3 & 0.0 \\
+\JC{} (per task, traces) & 12.5 & 0.0 & 11.8 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Results.}
-Table~\ref{tab:gta} shows the results. The 7B executor answers few GTA requests under any menu: Keep all solves 2 of 32 \task{read_arith} requests and none of the \task{web_fact} requests, so the methods differ by one to three requests. Within that range, \JA{} solves 5 of 32 \task{read_arith} requests, more than any other method, and \JB{} solves 3 of 15 \task{count_arith} requests, where every other method in Table~\ref{tab:gta} solves at most one. \JC{} has little to read: the executor calls a tool in 6 of 33 \task{read_arith} and 2 of 15 \task{count_arith} build trajectories, so most tools never appear in a trace. On \task{web_fact}, no two-tool space helps the 7B executor beyond one or two requests.
+Table~\ref{tab:gta} shows the results. The 7B executor answers few GTA requests under any menu: Keep all solves 2 of 32 \task{read_arith} requests and none of the \task{web_fact} requests, so the methods differ by one to three requests. On \task{read_arith} the three Jev spaces tie with TTO and Beam Search at 4 of 32, above every other method. On \task{count_arith}, \JA{} solves 3 of 15 requests and \JB{} 2, where the best baseline solves 2 and Keep all 1. \JC{} has little to read: the executor calls a tool in 6 of 33 \task{read_arith} and 2 of 15 \task{count_arith} build trajectories, so most tools never appear in a trace, and on \task{count_arith} its space misses the counting tool. On \task{web_fact} no space helps the 7B executor beyond two requests, and a repeated session moves single methods by one request, so the \task{web_fact} column carries no ranking.
 
 % ---------------------------------------------------------------------
 \section{Conclusion}
