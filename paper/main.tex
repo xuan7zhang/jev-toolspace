@@ -26,7 +26,7 @@
 \date{September 2026}
 
 \abstract{
-Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07. On BFCL multi-turn function calling, where every tool stays callable and the space decides which tools keep full documentation, the order reverses: spaces built from requests raise accuracy from 11.3\% to 16.3--17.3\%, while spaces built from the executor's own traces reach 12.5\%, because those traces are mostly failed attempts.
+Serving each recurring task with a small tool space instead of the whole registry makes tool-using agents more accurate and cheaper to run. We test whether Jev, the TypeSafe System One model, can decide which tools belong in such a space. On TGB, a compositional benchmark with ten task families and 15 tools, Jev scores every tool with an independent probability in three settings: from the request and tool descriptions for each request, from the same judgments averaged over a task's earlier requests, and from execution traces that show the tool outputs and the executor's answer. From requests alone, Jev often swaps the task's data source for a similar retrieval tool, and since a missing source breaks the whole chain, accuracy falls below serving all tools (60.3\% and 55.2\% against 69.5\%). From execution traces, Jev selects every required tool and reaches 80.7\%, 11.2 points above serving all tools, for a one-time cost of \$0.07. On BFCL multi-turn function calling, where every tool stays callable and the space decides which tools keep full documentation, the order reverses: spaces built from requests raise accuracy from 11.3\% to 16.3--17.3\%, above every baseline (at most 13.8\%), while spaces built from the executor's own traces reach 12.5\%, because those traces are mostly failed attempts.
 }
 
 \begin{document}
@@ -37,12 +37,12 @@ Serving each recurring task with a small tool space instead of the whole registr
 
 A tool-using language model is usually served with every tool in its registry \citep{toolformer,gorilla,qin2024toolllm}. For requests that recur within a task, a smaller task-specific space removes distractor tools and shortens every prompt. Building that space means deciding which tools a task needs. Retrieval methods decide from tool descriptions \citep{xiao2024cpack,tool2vec}; trace-based methods decide from what the tools returned and what the model answered \citep{zheng2023judging}.
 
-We ask whether an external relevance model can make this decision. Jev \citep{jevdocs} answers yes/no questions about a shared input with independent probabilities, so one call can score every tool in a registry, and each tool's score stands on its own. It is also cheap (\$0.042 per million input tokens) and fast (about 0.3 seconds per call). We evaluate it on TGB \citep{tgb2026} and BFCL \citep{bfcl} with a fixed executor and find:
+We ask whether an external relevance model can make this decision. Jev \citep{jevdocs} answers yes/no questions about a shared input with independent probabilities, so one call can score every tool in a registry, and each tool's score stands on its own. It is also cheap (\$0.042 per million input tokens) and fast (about 0.3 seconds per call). We evaluate it on TGB \citep{tgb2026}, BFCL \citep{bfcl}, and GTA \citep{gta} with a fixed executor and find:
 \begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
   \item From the request and tool descriptions, Jev picks the downstream tools but often misses the upstream data source, which breaks the chain.
   \item Averaging these judgments over a task makes them worse, because the same mistake repeats on every request.
   \item From execution traces, Jev selects every required tool and improves on serving all tools by 11.2 points.
-  \item On BFCL, request-based spaces work and trace-based spaces do not: the executor fails most build conversations, so its traces show the wrong tools.
+  \item On BFCL, request-based spaces beat every baseline and trace-based spaces do not: the executor fails most build conversations, so its traces show the wrong tools.
 \end{itemize}
 
 % ---------------------------------------------------------------------
@@ -186,26 +186,69 @@ Jev scores the tools of each record's menu as on TGB. \JA{} reads a test record'
 
 \begin{table}[t]
 \centering\small
-\caption{BFCL, 160 test records. Accuracy is the mean of three runs (individual runs in brackets). Recall: share of the reference calls' tools that keep full documentation. Tokens: executor input tokens per record, summed over turns.}
+\caption{BFCL, 160 test records (one record is 0.625 points). Every method keeps full documentation for the same $K$ tools per class, except the router, which documents the tools it names for each record. Accuracy is the mean of three runs. Baselines and Jev were run in two sessions on the same server configuration; full documentation was rerun in each (11.0 and 11.3). Recall: share of the reference calls' tools that keep full documentation. Tokens: executor input tokens per record, summed over turns.}
 \label{tab:bfcl}
-\begin{tabular}{@{}lccc@{}}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-Method & Accuracy & Recall & Tokens \\
+Method & Accuracy & Runs & Recall & Tokens \\
 \midrule
-Full documentation & 11.3 {\scriptsize(11.3, 11.3, 11.3)} & 1.00 & 208k \\
-\JA{} (per request) & 16.3 {\scriptsize(15.6, 16.9, 16.3)} & 0.71 & 80k \\
-\JB{} (per task) & \textbf{17.3} {\scriptsize(17.5, 16.9, 17.5)} & 0.31 & 90k \\
-\JC{} (per task, traces) & 12.5 {\scriptsize(12.5, 12.5, 12.5)} & 0.45 & 93k \\
+Full documentation & 11.0 / 11.3 & {\scriptsize 10.6, 11.3, 11.3 / 11.3, 11.3, 11.3} & 1.00 & 204k / 208k \\
+Random & 11.9 & {\scriptsize 11.3, 10.6, 13.8} & 0.17 & 85k \\
+BM25 & 12.1 & {\scriptsize 11.9, 12.5, 11.9} & 0.30 & 91k \\
+Dense & 12.9 & {\scriptsize 12.5, 13.8, 12.5} & 0.34 & 99k \\
+Usage Frequency & 12.7 & {\scriptsize 12.5, 13.1, 12.5} & 0.43 & 97k \\
+Tool2Vec & 13.8 & {\scriptsize 13.8, 13.8, --} & 0.28 & 97k \\
+LLM as router & 13.5 & {\scriptsize 13.1, 13.8, 13.8} & 0.69 & 84k \\
+\midrule
+\JA{} (per request) & 16.3 & {\scriptsize 15.6, 16.9, 16.3} & 0.71 & 80k \\
+\JB{} (per task) & \textbf{17.3} & {\scriptsize 17.5, 16.9, 17.5} & 0.31 & 90k \\
+\JC{} (per task, traces) & 12.5 & {\scriptsize 12.5, 12.5, 12.5} & 0.45 & 93k \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Results.}
-Table~\ref{tab:bfcl} shows the results. Both request-based settings improve on full documentation in every run, by 4 to 6 points, and cut the executor's input by more than half. \JC{} stays near full documentation. Most of the gain comes from TradingBot (30.0\% with full documentation, 41.7\% with \JA{}, 39.2\% with \JB{}) and TravelAPI (12.5\%, 15.0\%, 20.0\%).
+Table~\ref{tab:bfcl} shows the results. \JB{} and \JA{} are the two best methods, 5 to 6 points above full documentation and 2.5 to 3.5 points above the best baselines (Tool2Vec 13.8\%, the router 13.5\%); their lowest runs (16.9\% and 15.6\%) are above the highest run of every baseline (13.8\%). They also cut the executor's input by more than half. The baselines lie between 11.9\% and 13.8\%, and single runs of the same baseline differ by up to 3 points, so their order among themselves is not settled. \JC{} falls in the same range. Most of the Jev gain comes from TradingBot (30.0\% with full documentation, 41.7\% with \JA{}, 39.2\% with \JB{}) and TravelAPI (12.5\%, 15.0\%, 20.0\%).
 
 The trace-based space is weak here because the traces are. The executor solves 20\% of the build records under full documentation, and its conversations are dominated by failed and repeated calls, such as switching to \tool{cp} after a failed \tool{mv} when the user asked to move a file. Jev reads these conversations faithfully, so the tools it credits are the ones the executor used, including the wrong ones, and tools the executor never called receive no credit at all. On TGB, where tool outputs are deterministic and the executor answers most build requests, the same reading recovers every required tool.
 
 Averaging over a class does not hurt on BFCL (\JB{} 17.3\% against \JA{} 16.3\%). Records within a class ask for different subsets of the class's functions, and the class average ranks the commonly needed functions first. Recall of the documented set is also a weak guide here: \JA{} documents more of the reference tools than \JB{} (0.71 against 0.31) at similar accuracy, because an undocumented tool remains callable.
+
+% ---------------------------------------------------------------------
+\section{GTA}
+\label{sec:gta}
+
+\paragraph{Setup.}
+GTA \citep{gta} serves image-based requests with a ReAct agent and an executable tool server. We use three exactly scoreable task types: \task{read_arith} (32 test requests), \task{count_arith} (15), and \task{web_fact} (17, with web search enabled), each split in half into build and test requests. The candidates are the seven tools whose outputs are available (OCR, ImageDescription, Calculator, CountGivenObject, RegionAttributeDescription, TextToBbox, Solver), plus GoogleSearch for \task{web_fact}. Every space keeps $K=2$ tools. Jev reads the request text and the tool descriptions (\JA{}, \JB{}) or the executor's full-menu build trajectories (\JC{}); the images themselves are not shown. The executor is Qwen2.5-7B-Instruct.
+
+\begin{table}[t]
+\centering\small
+\caption{GTA accuracy (\%) with a two-tool space. One request is 3.1 points on \task{read_arith}, 6.7 on \task{count_arith}, and 5.9 on \task{web_fact}. Jev rows and the first Keep all value come from one session; the other rows come from earlier sessions on the same split, whose Keep all is given in parentheses.}
+\label{tab:gta}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Method & \task{read_arith} & \task{count_arith} & \task{web_fact} \\
+\midrule
+Keep all & 6.3 & 0.0 {\scriptsize(6.7)} & 0.0 {\scriptsize(0.0)} \\
+No tools & 0.0 & 0.0 & 5.9 \\
+Random & 9.4 & 6.7 & 0.0 \\
+BM25 & 3.1 & 6.7 & 5.9 \\
+Dense & 3.1 & 6.7 & 0.0 \\
+Tool2Vec & 3.1 & 6.7 & 0.0 \\
+LLM as router & 3.1 & 6.7 & 0.0 \\
+TTO & 12.5 & 6.7 & 0.0 \\
+Beam Search & 12.5 & 0.0 & 11.8 \\
+\midrule
+\JA{} (per request) & \textbf{15.6} & 6.7 & 0.0 \\
+\JB{} (per task) & 9.4 & \textbf{20.0} & 0.0 \\
+\JC{} (per task, traces) & 9.4 & 6.7 & 5.9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Results.}
+Table~\ref{tab:gta} shows the results. The 7B executor answers few GTA requests under any menu: Keep all solves 2 of 32 \task{read_arith} requests and none of the \task{web_fact} requests, so the methods differ by one to three requests. Within that range, \JA{} solves 5 of 32 \task{read_arith} requests, more than any other method, and \JB{} solves 3 of 15 \task{count_arith} requests, where every other method in Table~\ref{tab:gta} solves at most one. \JC{} has little to read: the executor calls a tool in 6 of 33 \task{read_arith} and 2 of 15 \task{count_arith} build trajectories, so most tools never appear in a trace. On \task{web_fact}, no two-tool space helps the 7B executor beyond one or two requests.
 
 % ---------------------------------------------------------------------
 \section{Conclusion}

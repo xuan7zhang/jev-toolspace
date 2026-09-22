@@ -1,0 +1,56 @@
+{
+ "web_fact": {
+  "n_train": 18,
+  "n_test": 17,
+  "test_acc": {
+   "full": 0.0,
+   "jevA": 0.0,
+   "jevB": 0.0,
+   "jevC": 5.88
+  },
+  "menus": {
+   "tto": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver",
+    "GoogleSearch"
+   ],
+   "elim": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver",
+    "GoogleSearch"
+   ],
+   "beam": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver",
+    "GoogleSearch"
+   ]
+  },
+  "tto_trace": [],
+  "elim_trace": [],
+  "train_acc": {
+   "singles": {},
+   "pairs": {}
+  },
+  "router_menus": null,
+  "bm25_menus": null,
+  "tool2vec_menus": null,
+  "lots_menu": null,
+  "lots_traj_k": null,
+  "lots_kfull": null
+ }
+}

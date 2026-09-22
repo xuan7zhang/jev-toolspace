@@ -1,0 +1,104 @@
+{
+ "read_arith": {
+  "n_train": 33,
+  "n_test": 32,
+  "test_acc": {
+   "full": 6.25,
+   "jevA": 15.62,
+   "jevB": 9.38,
+   "jevC": 9.38
+  },
+  "menus": {
+   "tto": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ],
+   "elim": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ],
+   "beam": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ]
+  },
+  "tto_trace": [],
+  "elim_trace": [],
+  "train_acc": {
+   "singles": {},
+   "pairs": {}
+  },
+  "router_menus": null,
+  "bm25_menus": null,
+  "tool2vec_menus": null,
+  "lots_menu": null,
+  "lots_traj_k": null,
+  "lots_kfull": null
+ },
+ "count_arith": {
+  "n_train": 15,
+  "n_test": 15,
+  "test_acc": {
+   "full": 0.0,
+   "jevA": 6.67,
+   "jevB": 20.0,
+   "jevC": 6.67
+  },
+  "menus": {
+   "tto": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ],
+   "elim": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ],
+   "beam": [
+    "OCR",
+    "ImageDescription",
+    "Calculator",
+    "CountGivenObject",
+    "RegionAttributeDescription",
+    "TextToBbox",
+    "Solver"
+   ]
+  },
+  "tto_trace": [],
+  "elim_trace": [],
+  "train_acc": {
+   "singles": {},
+   "pairs": {}
+  },
+  "router_menus": null,
+  "bm25_menus": null,
+  "tool2vec_menus": null,
+  "lots_menu": null,
+  "lots_traj_k": null,
+  "lots_kfull": null
+ }
+}
