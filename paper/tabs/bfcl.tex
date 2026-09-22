@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering\small\setlength{\tabcolsep}{3pt}
+\caption{BFCL multi-turn: accuracy (\%) on the 160 test records, mean of three runs, one column per executor. Every method keeps full documentation for the same $K$ tools per API class (the router documents the tools it names per record); baselines and Jev were run in two sessions per executor, each with its own full-documentation run (the two agree within one record). Best reduced space in bold.}
+\label{tab:bfcl}
+\fitwidth{
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Method & Qwen2.5-7B & Qwen3-4B & Qwen3.5-4B & Qwen3.5-9B & Gemma4-12B & Phi-4-mini \\
+\midrule
+Full documentation & 11.2 & 18.8 & 13.8 & 23.8 & -- & 4.4 \\
+Random & 11.9 & -- & -- & -- & -- & -- \\
+BM25 & 12.1 & -- & -- & -- & -- & -- \\
+Dense & 12.9 & -- & -- & -- & -- & -- \\
+Usage Frequency & 12.7 & -- & -- & -- & -- & -- \\
+Tool2Vec & 13.8 & -- & -- & -- & -- & -- \\
+LLM as router & 13.5 & -- & -- & -- & -- & -- \\
+\midrule
+Jev-A (per request) & 16.2 & -- & 8.8 & -- & -- & \textbf{5.0} \\
+Jev-B (per task) & \textbf{17.3} & -- & \textbf{15.6} & -- & -- & \textbf{5.0} \\
+Jev-C (per task, traces) & 12.5 & -- & 12.5 & -- & -- & 3.1 \\
+\bottomrule
+\end{tabular}}
+\end{table}

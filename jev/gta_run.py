@@ -44,10 +44,12 @@ def trace(v):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--types", required=True); ap.add_argument("--out-dir", default=f"{BIG}/results/jev")
-    ap.add_argument("--model", default="jev-latest"); ap.add_argument("--workers", type=int, default=8); a = ap.parse_args()
-    os.makedirs(a.out_dir, exist_ok=True); K = json.load(open(f"{BIG}/results/tool2vec/K_t1.json"))
+    ap.add_argument("--model", default="jev-latest"); ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--tag", default="7b"); ap.add_argument("--full-pred", default=None, help="executor's full-menu run (gta_bench_end.json) for condition C")
+    a = ap.parse_args(); K = json.load(open(f"{BIG}/results/tool2vec/K_t1.json"))
     cl = JevClient(model=a.model, cache=f"{a.out_dir}/jev_cache.jsonl"); tools = [(t, desc(t)) for t in CAND]
-    log = json.load(open(f"{a.out_dir}/gta_jev_run_7b.json")) if os.path.exists(f"{a.out_dir}/gta_jev_run_7b.json") else {}
+    a.out_dir = a.out_dir if a.tag == "7b" else f"{a.out_dir}/{a.tag}"; os.makedirs(a.out_dir, exist_ok=True)
+    lp = f"{a.out_dir}/gta_jev_run_{a.tag}.json"; log = json.load(open(lp)) if os.path.exists(lp) else {}
     for ty in a.types.split(","):
         sp = json.load(open(f"{OUT}/{ty}_split.json")); train, test = [str(x) for x in sp["train"]], [str(x) for x in sp["test"]]; k = int(K[ty])
         calls = []
@@ -56,7 +58,7 @@ def main():
         with cf.ThreadPoolExecutor(a.workers) as ex: rq = dict(ex.map(req, train + test))
         if ty == "web_fact":
             w = json.load(open(WF_TRAIN)); p = json.load(open(w["pred"])); pred = {str(i): p[str(j)] for j, i in enumerate(w["ids"]) if str(j) in p}
-        else: pred = json.load(open(FULL_PRED))
+        else: pred = json.load(open(a.full_pred or FULL_PRED))
         def trc(i):
             outs, ans = trace(pred.get(i, {}))
             if not outs: return i, {}, 0
@@ -75,9 +77,9 @@ def main():
                        C_traces_with_calls=sum(1 for i in train if tc[i][1]), A_menus=mA, per_request_A={i: rq[i] for i in test},
                        per_request_B={i: rq[i] for i in train}, per_request_C={i: tc[i][0] for i in train},
                        cost={ph: dict(v, usd=v["input_tokens"] * PRICE_PER_M_INPUT / 1e6) for ph, v in cost.items()},
-                       models=sorted({r.get("model") for _, r in calls}), prompts=PROMPTS, trace_source=(WF_TRAIN if ty == "web_fact" else FULL_PRED),
+                       models=sorted({r.get("model") for _, r in calls}), prompts=PROMPTS, trace_source=(WF_TRAIN if ty == "web_fact" else (a.full_pred or FULL_PRED)),
                        api=os.environ.get("GTA_USE_API") == "1", finished=time.strftime("%F %T"))
         print(ty, "K", k, "B", mB, "C", mC, "C traces with calls", log[ty]["C_traces_with_calls"], "/", len(train), dict(log[ty]["cost"]), flush=True)
-        json.dump(log, open(f"{a.out_dir}/gta_jev_run_7b.json", "w"), indent=1)
+        json.dump(log, open(lp, "w"), indent=1)
 
 if __name__ == "__main__": main()

@@ -1,0 +1,765 @@
+{
+ "config": {
+  "dir": "/datasets/omni_pretraining/gta2/results/taco/tgb4",
+  "tag": "q3_8b",
+  "conds": "A,B,C",
+  "out_dir": "/datasets/omni_pretraining/gta2/results/taco/tgb4/jev/full",
+  "model": "jev-latest",
+  "workers": 8,
+  "rpm": 600,
+  "limit_fit": 80,
+  "limit_eval": 320,
+  "traces": "/datasets/omni_pretraining/gta2/results/taco/tgb4/jev/fit_traces_q3_8b.json",
+  "jev_model_requested": "jev-latest",
+  "tool_order": [
+   "TableQuery",
+   "SensorAPI",
+   "CalendarAPI",
+   "DocRetrieve",
+   "Translate",
+   "ExchangeRate",
+   "Calculator",
+   "Summarize",
+   "Barcode",
+   "Solver",
+   "UnitConvert",
+   "TempConvert",
+   "CurrencyConvert",
+   "DurationCalc",
+   "GoogleSearch"
+  ],
+  "tool_docs": {
+   "TableQuery": "Return every row of the requested table, not one row.",
+   "SensorAPI": "Return the whole reading series for a station.",
+   "CalendarAPI": "Return the events on a booking reference, as clock times.",
+   "DocRetrieve": "Passage retrieval over the task's corpus. Returns the matching passage",
+   "Translate": "Decode the constructed-language numerals in whatever passage it is",
+   "ExchangeRate": "",
+   "Calculator": "Real evaluation of a real expression string. If the expression still",
+   "Summarize": "Lossy restatement with a rounded aggregate -- authoritative in tone and",
+   "Barcode": "",
+   "Solver": "Solves A*X + B = C. Needed by `equation_short`; elsewhere it takes the",
+   "UnitConvert": "km -> miles. Needed by `gauge_over`; on any other panel it converts",
+   "TempConvert": "Celsius -> Fahrenheit. Needed by `temp_over`.",
+   "CurrencyConvert": "USD -> EUR. Needed by `invoice_currency`; elsewhere it emits a",
+   "DurationCalc": "Minutes between two clock readings. Needed by `timetable_over`;",
+   "GoogleSearch": "Deterministic retrieval over the task's own almanac corpus, rendered in"
+  },
+  "K_star": {
+   "compute_only": 1,
+   "doc_two_facts": 2,
+   "fx_settle": 3,
+   "no_tool": 1,
+   "schedule_gap": 2,
+   "sensor_convert": 5,
+   "sensor_mean": 2,
+   "table_filter": 7,
+   "table_total": 2,
+   "translate_fact": 3
+  },
+  "prompts": {
+   "request": "For the user request `request`, would an agent need to call the tool {tool} (described in `tools`) to answer it correctly? Count a tool as needed if its output is required at any step, including intermediate steps whose result feeds another tool. Judge only from the request and the tool descriptions.",
+   "trace": "An assistant answered the request `request` after seeing the outputs in `tool_outputs` and gave the final answer `answer`. Does that answer rely on the output of the tool {tool}? Say yes if the answer uses information that appears in that tool's output, directly or through another tool's output that was computed from it. Do not judge whether the answer is correct and do not answer the request yourself.",
+   "conversation": "An assistant handled the multi-turn user conversation in `conversation` by calling tools; `conversation` lists the user turns, the assistant's calls, the tool outputs, and the assistant's replies. Did the assistant rely on the tool {tool} to carry out the user's requests? Say yes if a call to {tool} performed an action the user asked for, or if its output was used by a later call or by the assistant's reply. Do not judge whether the assistant succeeded, and do not carry out the requests yourself."
+  },
+  "mock": false,
+  "started": "2026-09-22 03:05:16",
+  "price_per_M_input": 0.042
+ },
+ "jev_model_returned": [
+  "jev-1.13.0"
+ ],
+ "cost": {
+  "build": {
+   "calls": 1600,
+   "input_tokens": 3178553,
+   "output_tokens": 486400,
+   "cached": 833,
+   "latency_ms": 461876,
+   "usd": 0.133499226,
+   "mean_latency_s": 0.6021851368970013
+  },
+  "online": {
+   "calls": 3200,
+   "input_tokens": 5852418,
+   "output_tokens": 972800,
+   "cached": 3200,
+   "latency_ms": 991773,
+   "usd": 0.245801556,
+   "mean_latency_s": 991.773
+  }
+ },
+ "spaces": {
+  "B": {
+   "compute_only": {
+    "space": [
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.0155,
+     "SensorAPI": 0.01,
+     "CalendarAPI": 0.01,
+     "DocRetrieve": 0.02,
+     "Translate": 0.019875,
+     "ExchangeRate": 0.02,
+     "Calculator": 0.90125,
+     "Summarize": 0.02,
+     "Barcode": 0.01,
+     "Solver": 0.0455,
+     "UnitConvert": 0.01925,
+     "TempConvert": 0.01,
+     "CurrencyConvert": 0.02,
+     "DurationCalc": 0.01,
+     "GoogleSearch": 0.019875
+    }
+   },
+   "doc_two_facts": {
+    "space": [
+     "Calculator",
+     "TableQuery"
+    ],
+    "mean_score": {
+     "TableQuery": 0.699125,
+     "SensorAPI": 0.022125,
+     "CalendarAPI": 0.014875000000000001,
+     "DocRetrieve": 0.6835,
+     "Translate": 0.22775,
+     "ExchangeRate": 0.063375,
+     "Calculator": 0.791,
+     "Summarize": 0.0495,
+     "Barcode": 0.132875,
+     "Solver": 0.075,
+     "UnitConvert": 0.030875,
+     "TempConvert": 0.01925,
+     "CurrencyConvert": 0.0615,
+     "DurationCalc": 0.011875,
+     "GoogleSearch": 0.67575
+    }
+   },
+   "fx_settle": {
+    "space": [
+     "Calculator",
+     "DocRetrieve",
+     "GoogleSearch"
+    ],
+    "mean_score": {
+     "TableQuery": 0.529,
+     "SensorAPI": 0.028624999999999998,
+     "CalendarAPI": 0.02075,
+     "DocRetrieve": 0.6451250000000001,
+     "Translate": 0.4225,
+     "ExchangeRate": 0.387875,
+     "Calculator": 0.725375,
+     "Summarize": 0.05375,
+     "Barcode": 0.066875,
+     "Solver": 0.110375,
+     "UnitConvert": 0.056625,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.160625,
+     "DurationCalc": 0.01675,
+     "GoogleSearch": 0.57925
+    }
+   },
+   "no_tool": {
+    "space": [
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.012875000000000001,
+     "SensorAPI": 0.01,
+     "CalendarAPI": 0.01,
+     "DocRetrieve": 0.02,
+     "Translate": 0.02,
+     "ExchangeRate": 0.01,
+     "Calculator": 0.73175,
+     "Summarize": 0.02,
+     "Barcode": 0.010125,
+     "Solver": 0.048,
+     "UnitConvert": 0.010125,
+     "TempConvert": 0.01,
+     "CurrencyConvert": 0.01,
+     "DurationCalc": 0.01,
+     "GoogleSearch": 0.012
+    }
+   },
+   "schedule_gap": {
+    "space": [
+     "CalendarAPI",
+     "DurationCalc"
+    ],
+    "mean_score": {
+     "TableQuery": 0.1105,
+     "SensorAPI": 0.02825,
+     "CalendarAPI": 0.9293750000000001,
+     "DocRetrieve": 0.30125,
+     "Translate": 0.095,
+     "ExchangeRate": 0.01625,
+     "Calculator": 0.60375,
+     "Summarize": 0.04025,
+     "Barcode": 0.039625,
+     "Solver": 0.0655,
+     "UnitConvert": 0.0235,
+     "TempConvert": 0.01925,
+     "CurrencyConvert": 0.012750000000000001,
+     "DurationCalc": 0.892,
+     "GoogleSearch": 0.282375
+    }
+   },
+   "sensor_convert": {
+    "space": [
+     "SensorAPI",
+     "TempConvert",
+     "Calculator",
+     "GoogleSearch",
+     "TableQuery"
+    ],
+    "mean_score": {
+     "TableQuery": 0.21575,
+     "SensorAPI": 0.9492499999999999,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.194375,
+     "Translate": 0.081875,
+     "ExchangeRate": 0.02,
+     "Calculator": 0.65,
+     "Summarize": 0.21175,
+     "Barcode": 0.030625,
+     "Solver": 0.064625,
+     "UnitConvert": 0.060125,
+     "TempConvert": 0.90425,
+     "CurrencyConvert": 0.02,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.216375
+    }
+   },
+   "sensor_mean": {
+    "space": [
+     "SensorAPI",
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.2205,
+     "SensorAPI": 0.9442499999999999,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.267,
+     "Translate": 0.11975,
+     "ExchangeRate": 0.020125,
+     "Calculator": 0.8468749999999999,
+     "Summarize": 0.180125,
+     "Barcode": 0.03,
+     "Solver": 0.0835,
+     "UnitConvert": 0.088875,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.01975,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.311875
+    }
+   },
+   "table_filter": {
+    "space": [
+     "Calculator",
+     "TableQuery",
+     "DocRetrieve",
+     "GoogleSearch",
+     "Translate",
+     "Summarize",
+     "Solver"
+    ],
+    "mean_score": {
+     "TableQuery": 0.83475,
+     "SensorAPI": 0.037875,
+     "CalendarAPI": 0.021500000000000002,
+     "DocRetrieve": 0.66925,
+     "Translate": 0.152375,
+     "ExchangeRate": 0.043375000000000004,
+     "Calculator": 0.835,
+     "Summarize": 0.09525,
+     "Barcode": 0.057375,
+     "Solver": 0.0655,
+     "UnitConvert": 0.031125,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.050375,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.52125
+    }
+   },
+   "table_total": {
+    "space": [
+     "Calculator",
+     "DocRetrieve"
+    ],
+    "mean_score": {
+     "TableQuery": 0.61375,
+     "SensorAPI": 0.02,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.641375,
+     "Translate": 0.074625,
+     "ExchangeRate": 0.055125,
+     "Calculator": 0.74325,
+     "Summarize": 0.061875,
+     "Barcode": 0.057375,
+     "Solver": 0.07237500000000001,
+     "UnitConvert": 0.028125,
+     "TempConvert": 0.012375,
+     "CurrencyConvert": 0.0665,
+     "DurationCalc": 0.015125,
+     "GoogleSearch": 0.503625
+    }
+   },
+   "translate_fact": {
+    "space": [
+     "DocRetrieve",
+     "Translate",
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.473,
+     "SensorAPI": 0.040625,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.9081250000000001,
+     "Translate": 0.89175,
+     "ExchangeRate": 0.02,
+     "Calculator": 0.793125,
+     "Summarize": 0.049,
+     "Barcode": 0.057,
+     "Solver": 0.074,
+     "UnitConvert": 0.043375000000000004,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.02,
+     "DurationCalc": 0.018875,
+     "GoogleSearch": 0.482875
+    }
+   }
+  },
+  "C": {
+   "compute_only": {
+    "space": [
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.018875,
+     "SensorAPI": 0.0125,
+     "CalendarAPI": 0.014125,
+     "DocRetrieve": 0.018875,
+     "Translate": 0.0115,
+     "ExchangeRate": 0.0195,
+     "Calculator": 0.9575,
+     "Summarize": 0.02,
+     "Barcode": 0.0205,
+     "Solver": 0.02325,
+     "UnitConvert": 0.01925,
+     "TempConvert": 0.01125,
+     "CurrencyConvert": 0.02,
+     "DurationCalc": 0.010625,
+     "GoogleSearch": 0.02
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "doc_two_facts": {
+    "space": [
+     "DocRetrieve",
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.02125,
+     "SensorAPI": 0.019375,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.937125,
+     "Translate": 0.0195,
+     "ExchangeRate": 0.02,
+     "Calculator": 0.827,
+     "Summarize": 0.03,
+     "Barcode": 0.044500000000000005,
+     "Solver": 0.031375,
+     "UnitConvert": 0.020125,
+     "TempConvert": 0.0185,
+     "CurrencyConvert": 0.027875,
+     "DurationCalc": 0.01975,
+     "GoogleSearch": 0.030625
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "fx_settle": {
+    "space": [
+     "Calculator",
+     "DocRetrieve",
+     "ExchangeRate"
+    ],
+    "mean_score": {
+     "TableQuery": 0.02125,
+     "SensorAPI": 0.02,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.7935,
+     "Translate": 0.019625,
+     "ExchangeRate": 0.441125,
+     "Calculator": 0.87175,
+     "Summarize": 0.03,
+     "Barcode": 0.038625,
+     "Solver": 0.030625,
+     "UnitConvert": 0.029249999999999998,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.03025,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.0305
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "no_tool": {
+    "space": [
+     "Barcode"
+    ],
+    "mean_score": {
+     "TableQuery": 0.016125,
+     "SensorAPI": 0.011625,
+     "CalendarAPI": 0.011625,
+     "DocRetrieve": 0.018125,
+     "Translate": 0.01125,
+     "ExchangeRate": 0.010375,
+     "Calculator": 0.02,
+     "Summarize": 0.0195,
+     "Barcode": 0.031625,
+     "Solver": 0.019875,
+     "UnitConvert": 0.01825,
+     "TempConvert": 0.0125,
+     "CurrencyConvert": 0.013625,
+     "DurationCalc": 0.010750000000000001,
+     "GoogleSearch": 0.019875
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "schedule_gap": {
+    "space": [
+     "Calculator",
+     "CalendarAPI"
+    ],
+    "mean_score": {
+     "TableQuery": 0.021,
+     "SensorAPI": 0.02025,
+     "CalendarAPI": 0.65275,
+     "DocRetrieve": 0.020625,
+     "Translate": 0.019625,
+     "ExchangeRate": 0.02,
+     "Calculator": 0.7835,
+     "Summarize": 0.028374999999999997,
+     "Barcode": 0.061125,
+     "Solver": 0.033,
+     "UnitConvert": 0.02075,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.020125,
+     "DurationCalc": 0.04,
+     "GoogleSearch": 0.0305
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "sensor_convert": {
+    "space": [
+     "SensorAPI",
+     "Calculator",
+     "Solver",
+     "TempConvert",
+     "Barcode"
+    ],
+    "mean_score": {
+     "TableQuery": 0.020375,
+     "SensorAPI": 0.923875,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.02025,
+     "Translate": 0.02,
+     "ExchangeRate": 0.019875,
+     "Calculator": 0.48575,
+     "Summarize": 0.025875,
+     "Barcode": 0.031,
+     "Solver": 0.032125,
+     "UnitConvert": 0.029249999999999998,
+     "TempConvert": 0.031125,
+     "CurrencyConvert": 0.019875,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.029875
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "sensor_mean": {
+    "space": [
+     "SensorAPI",
+     "Calculator"
+    ],
+    "mean_score": {
+     "TableQuery": 0.020125,
+     "SensorAPI": 0.941875,
+     "CalendarAPI": 0.0195,
+     "DocRetrieve": 0.020125,
+     "Translate": 0.0185,
+     "ExchangeRate": 0.019125,
+     "Calculator": 0.349375,
+     "Summarize": 0.02175,
+     "Barcode": 0.029124999999999998,
+     "Solver": 0.030125,
+     "UnitConvert": 0.02075,
+     "TempConvert": 0.019875,
+     "CurrencyConvert": 0.019625,
+     "DurationCalc": 0.019875,
+     "GoogleSearch": 0.028125
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "table_filter": {
+    "space": [
+     "TableQuery",
+     "Calculator",
+     "Solver",
+     "Barcode",
+     "Summarize",
+     "GoogleSearch",
+     "DocRetrieve"
+    ],
+    "mean_score": {
+     "TableQuery": 0.92525,
+     "SensorAPI": 0.02,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.026875,
+     "Translate": 0.01975,
+     "ExchangeRate": 0.02,
+     "Calculator": 0.75425,
+     "Summarize": 0.0325,
+     "Barcode": 0.032625,
+     "Solver": 0.0345,
+     "UnitConvert": 0.023125,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.024875,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.0305
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "table_total": {
+    "space": [
+     "Calculator",
+     "TableQuery"
+    ],
+    "mean_score": {
+     "TableQuery": 0.67225,
+     "SensorAPI": 0.02,
+     "CalendarAPI": 0.020125,
+     "DocRetrieve": 0.024,
+     "Translate": 0.0195,
+     "ExchangeRate": 0.0205,
+     "Calculator": 0.78975,
+     "Summarize": 0.029875,
+     "Barcode": 0.039375,
+     "Solver": 0.030875,
+     "UnitConvert": 0.02175,
+     "TempConvert": 0.02,
+     "CurrencyConvert": 0.023875,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.029625
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   },
+   "translate_fact": {
+    "space": [
+     "Translate",
+     "DocRetrieve",
+     "Barcode"
+    ],
+    "mean_score": {
+     "TableQuery": 0.025625,
+     "SensorAPI": 0.020375,
+     "CalendarAPI": 0.02,
+     "DocRetrieve": 0.806875,
+     "Translate": 0.943125,
+     "ExchangeRate": 0.0205,
+     "Calculator": 0.030625,
+     "Summarize": 0.044875,
+     "Barcode": 0.07037500000000001,
+     "Solver": 0.03025,
+     "UnitConvert": 0.026625,
+     "TempConvert": 0.020125,
+     "CurrencyConvert": 0.02125,
+     "DurationCalc": 0.02,
+     "GoogleSearch": 0.032875
+    },
+    "n_observed": 15,
+    "filled_unobserved": [],
+    "support": {
+     "TableQuery": 80,
+     "SensorAPI": 80,
+     "CalendarAPI": 80,
+     "DocRetrieve": 80,
+     "Translate": 80,
+     "ExchangeRate": 80,
+     "Calculator": 80,
+     "Summarize": 80,
+     "Barcode": 80,
+     "Solver": 80,
+     "UnitConvert": 80,
+     "TempConvert": 80,
+     "CurrencyConvert": 80,
+     "DurationCalc": 80,
+     "GoogleSearch": 80
+    }
+   }
+  }
+ },
+ "finished": "2026-09-22 03:06:34"
+}

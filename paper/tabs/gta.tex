@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering\small\setlength{\tabcolsep}{3pt}
+\caption{GTA: accuracy (\%) on \task{read_arith} (32 test requests, one request is 3.1 points) and \task{count_arith} (15, one request is 6.7 points) with a two-tool space, all methods of a column in one session. Best reduced space in bold.}
+\label{tab:gta}
+\fitwidth{
+\begin{tabular}{@{}lcccccccccccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{Qwen2.5-3B} & \multicolumn{2}{c}{Qwen2.5-7B} & \multicolumn{2}{c}{Qwen3-8B} & \multicolumn{2}{c}{Qwen2.5-14B} & \multicolumn{2}{c}{Qwen3.5-9B} & \multicolumn{2}{c}{phi-4} & \multicolumn{2}{c}{Gemma4-12B} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11} \cmidrule(lr){12-13} \cmidrule(lr){14-15}
+Method & read & count & read & count & read & count & read & count & read & count & read & count & read & count \\
+\midrule
+Keep all & -- & -- & 6.2 & 6.7 & 9.4 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+No tools & -- & -- & 0.0 & 0.0 & 0.0 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Random & -- & -- & 9.4 & 6.7 & 6.2 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+BM25 & -- & -- & 3.1 & 6.7 & 6.2 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Dense & -- & -- & 3.1 & 13.3 & 3.1 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Tool2Vec & -- & -- & 3.1 & 6.7 & 6.2 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+LLM as router & -- & -- & 3.1 & 6.7 & 9.4 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+TTO & -- & -- & \textbf{12.5} & 6.7 & \textbf{18.8} & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Beam Search & -- & -- & \textbf{12.5} & 0.0 & 3.1 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\midrule
+Jev-A (per request) & -- & -- & \textbf{12.5} & \textbf{20.0} & 15.6 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Jev-B (per task) & -- & -- & \textbf{12.5} & 13.3 & 15.6 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Jev-C (per task, traces) & -- & -- & \textbf{12.5} & 0.0 & 15.6 & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}}
+\end{table}

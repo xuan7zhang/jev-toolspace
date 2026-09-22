@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering\small\setlength{\tabcolsep}{3pt}
+\caption{TGB: accuracy (\%) averaged over the ten families on their 320 evaluation requests each, one column per executor. All methods in a column keep the same number of tools per family (the budget fixed from build accuracy) and were evaluated in one session. Best reduced space in bold.}
+\label{tab:tgb}
+\fitwidth{
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+Method & Qwen2.5-7B & Qwen2.5-14B & Llama3.1-8B & Mistral-7B & Qwen3.5-9B & Qwen3-8B & phi-4 & Gemma4-12B \\
+\midrule
+Keep all & 69.5 & 87.9 & 77.7 & 46.3 & 50.9 & 56.5 & 79.7 & 86.8 \\
+Random & 23.5 & 19.2 & 41.3 & 11.5 & 27.5 & 10.1 & 24.3 & 20.0 \\
+Dense & 24.9 & 20.7 & 30.8 & 17.1 & 15.8 & 10.1 & 20.0 & 29.3 \\
+Tool2Vec & 38.1 & 45.3 & 57.4 & 24.2 & 23.9 & 37.9 & 55.6 & 47.5 \\
+Trace judge & 67.6 & \textbf{90.7} & 79.6 & 55.4 & \textbf{64.8} & \textbf{78.1} & \textbf{91.9} & \textbf{89.9} \\
+\midrule
+Jev-A (per request) & 60.3 & 70.8 & 68.2 & 51.5 & 56.6 & 49.5 & 81.7 & 71.3 \\
+Jev-B (per task) & 55.2 & 65.3 & 65.8 & 47.9 & 54.7 & 43.6 & 81.8 & 66.6 \\
+Jev-C (per task, traces) & \textbf{80.7} & 90.6 & \textbf{80.3} & \textbf{63.4} & 60.8 & 76.4 & 91.0 & 89.3 \\
+\bottomrule
+\end{tabular}}
+\end{table}
