@@ -51,22 +51,20 @@ for key, name in bf_models:
 open(f"{OUT}/bfcl.tex", "w").write(table(rows, [m[0] for m in bf_models], cells,
     "BFCL multi-turn: accuracy (\\%) on the 160 test records, mean of three runs, one column per executor. Every method keeps full documentation for the same $K$ tools per API class (the router documents the tools it names per record); baselines and Jev were run in two sessions per executor, each with its own full-documentation run (the two agree within one record). Best reduced space in bold. $^\\dagger$: fewer than three runs completed so far.",
     "tab:bfcl", [m[1] + ("$^\\dagger$" if m[0] in PART else "") for m in bf_models]))
-# ---- GTA
+# ---- GTA: one pooled accuracy per executor over the 47 test requests (32 read_arith + 15 count_arith)
 gta_models = [("3b", "Qwen2.5-3B"), ("7b", "Qwen2.5-7B"), ("q3_8b", "Qwen3-8B"), ("14b", "Qwen2.5-14B"), ("q35_9b", "Qwen3.5-9B"), ("phi4", "phi-4"), ("gemma4_12b", "Gemma4-12B")]
 rows = ["Keep all", "No tools", "Random", "BM25", "Dense", "Tool2Vec", "LLM as router", "TTO", "Beam Search", "MIDRULE", "Jev-A (per request)", "Jev-B (per task)", "Jev-C (per task, traces)"]
 garm = {"Keep all": "full", "No tools": "notools", "Random": "random", "BM25": "bm25", "Dense": "dense", "Tool2Vec": "tool2vec", "LLM as router": "router", "TTO": "tto", "Beam Search": "beam", "Jev-A (per request)": "jevA", "Jev-B (per task)": "jevB", "Jev-C (per task, traces)": "jevC"}
-cells = {}; cols = []; heads = []
+N = {"read_arith": 32, "count_arith": 15}; cells = {}
 for tag, name in gta_models:
     d = ld(f"{IO}/typebase1_{tag}_jva.json") or {}
     dc = ld(f"{IO}/typebase1_{tag}_jvac.json") or {}
     if "count_arith" not in d and "count_arith" in dc: d["count_arith"] = dc["count_arith"]
-    for ty, short in (("read_arith", "read"), ("count_arith", "count")):
-        c = f"{tag}:{ty}"; cols.append(c); heads.append(short)
-        if d and ty in d:
-            for r in rows:
-                if r != "MIDRULE" and garm[r] in d[ty]["test_acc"]: cells[(r, c)] = d[ty]["test_acc"][garm[r]]
-hdr = " & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{name}}}" for _, name in gta_models) + r" \\" + "\n" + " ".join(f"\\cmidrule(lr){{{2+2*i}-{3+2*i}}}" for i in range(len(gta_models))) + "\n"
-open(f"{OUT}/gta.tex", "w").write(table(rows, cols, cells,
-    "GTA: accuracy (\\%) on \\task{read_arith} (32 test requests, one request is 3.1 points) and \\task{count_arith} (15, one request is 6.7 points) with a two-tool space, all methods of a column in one session. Best reduced space in bold.",
-    "tab:gta", heads, hdr))
-print("wrote", OUT, {k: len([c for c in cells if c[1] == k]) for k in set(c[1] for c in cells)})
+    if not all(ty in d for ty in N): continue
+    for r in rows:
+        if r == "MIDRULE" or not all(garm[r] in d[ty]["test_acc"] for ty in N): continue
+        cells[(r, tag)] = 100 * sum(d[ty]["test_acc"][garm[r]] / 100 * N[ty] for ty in N) / sum(N.values())
+open(f"{OUT}/gta.tex", "w").write(table(rows, [m[0] for m in gta_models], cells,
+    "GTA: accuracy (\\%) over the 47 test requests of \\task{read_arith} (32) and \\task{count_arith} (15) pooled (one request is 2.1 points), two-tool spaces, all methods of a column in one session. Best reduced space in bold.",
+    "tab:gta", [m[1] for m in gta_models]))
+print("wrote", OUT)

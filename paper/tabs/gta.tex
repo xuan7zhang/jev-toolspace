@@ -1,27 +1,25 @@
 \begin{table}[t]
 \centering\small\setlength{\tabcolsep}{3pt}
-\caption{GTA: accuracy (\%) on \task{read_arith} (32 test requests, one request is 3.1 points) and \task{count_arith} (15, one request is 6.7 points) with a two-tool space, all methods of a column in one session. Best reduced space in bold.}
+\caption{GTA: accuracy (\%) over the 47 test requests of \task{read_arith} (32) and \task{count_arith} (15) pooled (one request is 2.1 points), two-tool spaces, all methods of a column in one session. Best reduced space in bold.}
 \label{tab:gta}
 \fitwidth{
-\begin{tabular}{@{}lcccccccccccccc@{}}
+\begin{tabular}{@{}lccccccc@{}}
 \toprule
- & \multicolumn{2}{c}{Qwen2.5-3B} & \multicolumn{2}{c}{Qwen2.5-7B} & \multicolumn{2}{c}{Qwen3-8B} & \multicolumn{2}{c}{Qwen2.5-14B} & \multicolumn{2}{c}{Qwen3.5-9B} & \multicolumn{2}{c}{phi-4} & \multicolumn{2}{c}{Gemma4-12B} \\
-\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11} \cmidrule(lr){12-13} \cmidrule(lr){14-15}
-Method & read & count & read & count & read & count & read & count & read & count & read & count & read & count \\
+Method & Qwen2.5-3B & Qwen2.5-7B & Qwen3-8B & Qwen2.5-14B & Qwen3.5-9B & phi-4 & Gemma4-12B \\
 \midrule
-Keep all & 6.2 & 0.0 & 6.2 & 6.7 & 9.4 & 6.7 & 9.4 & 0.0 & 37.5 & 26.7 & 15.6 & 6.7 & 40.6 & 6.7 \\
-No tools & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 6.2 & 0.0 & 9.4 & 0.0 & 6.2 & 6.7 & 0.0 & 0.0 \\
-Random & 3.1 & 0.0 & 9.4 & 6.7 & 6.2 & 0.0 & 9.4 & 0.0 & 25.0 & 13.3 & 3.1 & 0.0 & 21.9 & 13.3 \\
-BM25 & 0.0 & 6.7 & 3.1 & 6.7 & 6.2 & 6.7 & 6.2 & 6.7 & 18.8 & 26.7 & 6.2 & 0.0 & 12.5 & 6.7 \\
-Dense & 0.0 & 6.7 & 3.1 & 13.3 & 3.1 & 6.7 & 6.2 & 6.7 & 3.1 & 26.7 & 3.1 & 0.0 & 3.1 & 20.0 \\
-Tool2Vec & 9.4 & 0.0 & 3.1 & 6.7 & 6.2 & 13.3 & 6.2 & \textbf{13.3} & \textbf{46.9} & 33.3 & \textbf{21.9} & 0.0 & 31.2 & 20.0 \\
-LLM as router & 15.6 & 0.0 & 3.1 & 6.7 & 9.4 & \textbf{33.3} & 9.4 & 6.7 & 25.0 & 26.7 & 12.5 & 0.0 & 31.2 & 13.3 \\
-TTO & 6.2 & \textbf{13.3} & \textbf{12.5} & 6.7 & \textbf{18.8} & 26.7 & 9.4 & 0.0 & 25.0 & \textbf{40.0} & \textbf{21.9} & \textbf{13.3} & 3.1 & \textbf{26.7} \\
-Beam Search & 15.6 & 6.7 & \textbf{12.5} & 0.0 & 3.1 & 26.7 & 9.4 & 6.7 & 37.5 & \textbf{40.0} & 18.8 & 0.0 & 31.2 & 13.3 \\
+Keep all & 4.3 & 6.4 & 8.5 & 6.4 & 34.0 & 12.8 & 29.8 \\
+No tools & 0.0 & 0.0 & 0.0 & 4.3 & 6.4 & 6.4 & 0.0 \\
+Random & 2.1 & 8.5 & 4.3 & 6.4 & 21.3 & 2.1 & 19.2 \\
+BM25 & 2.1 & 4.3 & 6.4 & 6.4 & 21.3 & 4.3 & 10.6 \\
+Dense & 2.1 & 6.4 & 4.3 & 6.4 & 10.6 & 2.1 & 8.5 \\
+Tool2Vec & 6.4 & 4.3 & 8.5 & 8.5 & \textbf{42.6} & 14.9 & 27.7 \\
+LLM as router & 10.6 & 4.3 & 17.0 & 8.5 & 25.5 & 8.5 & 25.5 \\
+TTO & 8.5 & 10.6 & \textbf{21.3} & 6.4 & 29.8 & \textbf{19.2} & 10.6 \\
+Beam Search & 12.8 & 8.5 & 10.6 & 8.5 & 38.3 & 12.8 & 25.5 \\
 \midrule
-Jev-A (per request) & 12.5 & 6.7 & \textbf{12.5} & \textbf{20.0} & 15.6 & 13.3 & \textbf{15.6} & 6.7 & 40.6 & 33.3 & 15.6 & 0.0 & 28.1 & 13.3 \\
-Jev-B (per task) & \textbf{18.8} & 6.7 & \textbf{12.5} & 13.3 & 15.6 & 6.7 & 9.4 & 6.7 & 37.5 & 26.7 & 18.8 & 0.0 & 31.2 & 13.3 \\
-Jev-C (per task, traces) & 15.6 & 0.0 & \textbf{12.5} & 0.0 & 15.6 & 6.7 & 9.4 & 6.7 & 37.5 & 13.3 & 15.6 & \textbf{13.3} & 31.2 & 0.0 \\
+Jev-A (per request) & 10.6 & \textbf{14.9} & 14.9 & \textbf{12.8} & 38.3 & 10.6 & 23.4 \\
+Jev-B (per task) & \textbf{14.9} & 12.8 & 12.8 & 8.5 & 34.0 & 12.8 & 25.5 \\
+Jev-C (per task, traces) & 10.6 & 8.5 & 12.8 & 8.5 & 29.8 & 14.9 & 21.3 \\
 \bottomrule
 \end{tabular}}
 \end{table}
